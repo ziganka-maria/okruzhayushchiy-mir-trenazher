@@ -1259,58 +1259,69 @@ function chooseOption(btn, idx, q) {
 function renderMatch(q) {
   matchLeft.innerHTML = '';
   matchRight.innerHTML = '';
-  matchData = { q, matchedCount: 0, mistakes: 0, selectedLeft: null };
+  matchData = { q, matchedCount: 0, mistakes: 0, selected: null };
   const rightOrder = shuffle(q.pairs.map((p, i) => i));
   q.pairs.forEach((p, i) => {
     const lb = document.createElement('button');
     lb.className = 'match-item';
     lb.textContent = p.a;
+    lb.dataset.side = 'L';
     lb.dataset.idx = i;
-    lb.addEventListener('click', () => selectLeft(lb, i));
+    lb.addEventListener('click', () => selectItem(lb));
     matchLeft.appendChild(lb);
   });
   rightOrder.forEach(orig => {
     const rb = document.createElement('button');
     rb.className = 'match-item';
     rb.textContent = q.pairs[orig].b;
-    rb.addEventListener('click', () => selectRight(rb, orig));
+    rb.dataset.side = 'R';
+    rb.dataset.idx = orig;
+    rb.addEventListener('click', () => selectItem(rb));
     matchRight.appendChild(rb);
   });
 }
 
-function selectLeft(btn, i) {
+function selectItem(btn) {
   if (!matchData || btn.classList.contains('done')) return;
-  if (matchData.selectedLeft) matchData.selectedLeft.classList.remove('selected');
-  matchData.selectedLeft = btn;
-  btn.classList.add('selected');
-}
-
-function selectRight(btn, i) {
-  if (!matchData || btn.classList.contains('done')) return;
-  if (!matchData.selectedLeft) {
-    btn.classList.add('wrong-flash');
-    setTimeout(() => btn.classList.remove('wrong-flash'), 300);
+  const sel = matchData.selected;
+  if (!sel) {
+    matchData.selected = btn;
+    btn.classList.add('selected');
     return;
   }
-  const leftIdx = parseInt(matchData.selectedLeft.dataset.idx, 10);
-  if (leftIdx === i) {
-    matchData.selectedLeft.classList.remove('selected');
-    matchData.selectedLeft.classList.add('done');
-    matchData.selectedLeft.disabled = true;
+  if (sel === btn) {
+    sel.classList.remove('selected');
+    matchData.selected = null;
+    return;
+  }
+  if (sel.dataset.side === btn.dataset.side) {
+    sel.classList.remove('selected');
+    matchData.selected = btn;
+    btn.classList.add('selected');
+    return;
+  }
+  const i1 = parseInt(sel.dataset.idx, 10);
+  const i2 = parseInt(btn.dataset.idx, 10);
+  if (i1 === i2) {
+    sel.classList.remove('selected');
+    sel.classList.add('done');
+    sel.disabled = true;
     btn.classList.add('done');
     btn.disabled = true;
-    matchData.selectedLeft = null;
+    matchData.selected = null;
     matchData.matchedCount++;
     if (matchData.matchedCount === matchData.q.pairs.length) finishMatch();
   } else {
     matchData.mistakes++;
-    const sel = matchData.selectedLeft;
     sel.classList.add('wrong-flash');
     btn.classList.add('wrong-flash');
+    const a = sel, b = btn;
     setTimeout(() => {
-      if (sel && sel.classList) sel.classList.remove('wrong-flash');
-      btn.classList.remove('wrong-flash');
+      if (a && a.classList) a.classList.remove('wrong-flash');
+      if (b && b.classList) b.classList.remove('wrong-flash');
     }, 300);
+    sel.classList.remove('selected');
+    matchData.selected = null;
   }
 }
 
