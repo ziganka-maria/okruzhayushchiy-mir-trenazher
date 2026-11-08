@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Окружающий мир — викторина и тренажёр (3–4 класс)</title>
+<style>
+:root{--bg1:#e0f2fe;--bg2:#fff7e6;--card:#ffffff;--ink:#2c3e50;--muted:#6b7f8a;--accent:#f4511e;--accent2:#ff9800;--green:#2e7d32;--red:#d32f2f;--blue:#1976d2;--shadow:0 12px 32px rgba(0,0,0,.14)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:'Segoe UI',system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;color:var(--ink);background:linear-gradient(160deg,var(--bg1),var(--bg2));min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;position:relative;overflow-x:hidden}
+#app{width:100%;max-width:720px;margin:0 auto}
+.screen{width:100%}
+.card{background:var(--card);border-radius:24px;box-shadow:var(--shadow);padding:30px;text-align:center}
+.hero-emoji{font-size:60px;line-height:1;margin-bottom:10px;animation:float 3s ease-in-out infinite}
+h1{font-size:2rem;color:var(--accent);margin-bottom:8px}
+.subtitle{color:var(--muted);font-size:1.02rem;margin-bottom:18px;line-height:1.45}
+.cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}
+.cat-btn{background:#fff;border:2px solid #e0e0e0;border-radius:16px;padding:16px 14px;cursor:pointer;text-align:center;transition:all .15s}
+.cat-btn:hover{transform:translateY(-3px);border-color:var(--accent2);box-shadow:0 8px 18px rgba(0,0,0,.1)}
+.cat-emoji{font-size:2.2rem;line-height:1;margin-bottom:6px}
+.cat-title{font-weight:700;font-size:1rem;margin-bottom:4px}
+.cat-desc{font-size:.8rem;color:var(--muted);margin-bottom:6px;line-height:1.3}
+.cat-count{display:inline-block;background:#e3f2fd;color:var(--blue);border-radius:999px;padding:2px 10px;font-size:.75rem;font-weight:700}
+.rules-note{color:var(--muted);font-size:.9rem;margin-top:6px;line-height:1.5}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:8px}
+.topbar-left{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.back-btn{background:#fff;border:2px solid #e0e0e0;border-radius:999px;padding:6px 14px;font-weight:700;cursor:pointer;color:var(--ink);font-size:.9rem;transition:all .15s;box-shadow:var(--shadow);font-family:inherit}
+.back-btn:hover{border-color:var(--accent2);color:var(--accent)}
+.progress-info{font-weight:700;color:var(--ink)}
+.cat-pill{background:#fff;border-radius:999px;padding:6px 12px;font-size:.85rem;box-shadow:var(--shadow);margin-right:6px}
+.score-pill{background:#fff;border-radius:999px;padding:8px 16px;font-weight:700;box-shadow:var(--shadow);color:var(--accent)}
+.progress-bar{height:12px;background:#e0e0e0;border-radius:999px;overflow:hidden;margin-bottom:20px}
+#progressFill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:999px;transition:width .4s}
+.grade-badge{display:inline-block;background:#fff3e0;color:#e65100;border-radius:999px;padding:4px 14px;font-size:.85rem;font-weight:700;margin-bottom:10px}
+.q-title{font-size:1.4rem;margin-bottom:16px}
+.hints{display:flex;flex-direction:column;gap:10px;margin-bottom:18px}
+.hint-btn{width:100%;background:#e3f2fd;color:var(--blue);border:none;border-radius:14px;padding:11px;font-size:1rem;font-weight:700;cursor:pointer;transition:background .2s}
+.hint-btn:hover{background:#bbdefb}
+.hint-btn.used{background:#eceff1;color:#90a4ae;cursor:default}
+.hint-content{background:#fff8e1;border-radius:16px;padding:14px;margin-top:8px;font-size:1.5rem;letter-spacing:.05em}
+.hint-content.line{font-style:italic;font-size:1.12rem;color:var(--ink);background:#f3e5f5}
+.hint-content.author{font-size:1.15rem;font-weight:700;background:#e8f5e9;color:var(--green)}
+.hint-content svg{max-width:100%;height:auto}
+.section-title{font-size:1.1rem;color:var(--blue);margin:20px 0 10px;text-align:left}
+.prompt{font-size:1.15rem;font-weight:600;margin-bottom:14px;line-height:1.4}
+.passage{background:#f1f8e9;border:1px solid #dcedc8;border-radius:14px;padding:14px;text-align:left;font-size:1rem;line-height:1.55;margin-bottom:14px;max-height:190px;overflow-y:auto;white-space:pre-wrap}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.opt-btn{display:flex;align-items:center;gap:10px;background:#fafafa;border:2px solid #e0e0e0;border-radius:14px;padding:13px 14px;font-size:1rem;font-weight:600;cursor:pointer;text-align:left;transition:all .15s;font-family:inherit;color:var(--ink)}
+.opt-btn:hover{background:#fff3e0;border-color:var(--accent2)}
+.opt-btn:disabled{cursor:default}
+.opt-btn .letter{background:var(--blue);color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;font-size:.85rem}
+.opt-btn.correct{background:#e8f5e9;border-color:var(--green);animation:pop .4s}
+.opt-btn.correct .letter{background:var(--green)}
+.opt-btn.wrong{background:#ffebee;border-color:var(--red);animation:shake .4s}
+.opt-btn.wrong .letter{background:var(--red)}
+.match-box{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;align-items:start}
+.match-col{display:flex;flex-direction:column;gap:10px}
+.match-item{background:#fff;border:2px solid #e0e0e0;border-radius:12px;padding:12px 14px;font-weight:600;cursor:pointer;transition:all .15s;font-size:.95rem;font-family:inherit;color:var(--ink);line-height:1.35}
+.match-item:hover{border-color:var(--blue)}
+.match-item.selected{border-color:var(--blue);background:#e3f2fd}
+.match-item.done{border-color:var(--green);background:#e8f5e9;color:var(--green);cursor:default}
+.match-item.wrong-flash{border-color:var(--red);background:#ffebee;animation:shake .3s}
+.block-box{display:flex;flex-direction:column;gap:14px;margin-bottom:14px;text-align:left}
+.bq{border:2px solid #e0e0e0;border-radius:14px;padding:14px;background:#fff}
+.bq-text{font-weight:600;margin-bottom:10px;line-height:1.4}
+.bq-num{color:var(--blue);font-weight:700;margin-right:4px}
+.bq-opts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.bq-feedback{margin-top:10px;font-size:.92rem;color:var(--green);font-weight:600;line-height:1.4}
+.bq-feedback.bad{color:var(--red)}
+.toggle-btn{background:#fff3e0;border:2px solid #ffcc80;border-radius:999px;padding:6px 14px;font-weight:700;cursor:pointer;color:#e65100;font-size:.9rem;margin-bottom:12px;font-family:inherit;transition:all .15s}
+.toggle-btn:hover{border-color:var(--accent2)}
+.hide-options .answers,.hide-options .bq-opts{display:none}
+.input-row{display:flex;gap:10px;margin-bottom:14px}
+#answerInput{flex:1;border:2px solid #e0e0e0;border-radius:14px;padding:13px 16px;font-size:1.05rem;font-family:inherit;outline:none;transition:border-color .15s}
+#answerInput:focus{border-color:var(--accent2)}
+.btn{border:none;border-radius:999px;padding:13px 24px;font-size:1.05rem;font-weight:700;cursor:pointer;transition:transform .15s,box-shadow .15s;color:#fff;white-space:nowrap}
+.btn:active{transform:scale(.96)}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 6px 18px rgba(244,81,30,.35)}
+.btn-primary:hover{transform:translateY(-2px)}
+.feedback{border-radius:16px;padding:16px;margin-bottom:12px;font-size:1.02rem;text-align:left}
+.feedback.good{background:#e8f5e9;color:var(--green)}
+.feedback.bad{background:#ffebee;color:var(--red)}
+.feedback .fact{display:block;margin-top:8px;font-weight:400;color:var(--ink)}
+.feedback .right-answer{font-weight:700;color:var(--green)}
+.actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+.giveup-btn{background:none;border:none;color:var(--muted);text-decoration:underline;cursor:pointer;font-size:.95rem;padding:8px}
+.giveup-btn:hover{color:var(--red)}
+.result-emoji{font-size:72px;line-height:1;margin-bottom:8px;animation:float 3s ease-in-out infinite}
+.stars{font-size:2.4rem;margin:12px 0;letter-spacing:6px}
+.star{filter:grayscale(1);opacity:.3;transition:all .3s}
+.star.on{filter:none;opacity:1;transform:scale(1.15)}
+.score-final{font-size:1.3rem;font-weight:700;margin-bottom:8px}
+.score-final span{color:var(--accent)}
+.result-msg{color:var(--muted);margin-bottom:22px}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.05)}100%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.hint-content.reveal{animation:fadeIn .3s}
+.confetti{position:fixed;top:-20px;width:10px;height:16px;border-radius:2px;z-index:9999;pointer-events:none;animation:confettiFall linear forwards}
+@keyframes confettiFall{0%{transform:translateY(-20px) rotate(0)}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
+@media (max-width:520px){.cat-grid{grid-template-columns:1fr}.answers{grid-template-columns:1fr}.match-box{grid-template-columns:1fr}.bq-opts{grid-template-columns:1fr}.input-row{flex-direction:column}.card{padding:22px}h1{font-size:1.6rem}}
+</style>
+</head>
+<body>
+<div id="app">
+  <section id="startScreen" class="screen">
+    <div class="card hero">
+      <div class="hero-emoji">🌍✨</div>
+      <h1>Окружающий мир</h1>
+      <p class="subtitle">Два режима: <b>викторина</b> (угадай понятие по подсказкам) и <b>тренажёр</b> (выбор ответа из четырёх). 3–4 класс, включая историю.</p>
+      <h2 class="section-title">🎯 Викторина — угадай понятие</h2>
+      <div class="cat-grid" id="catGrid"></div>
+      <h2 class="section-title">🎓 Тренажёры</h2>
+      <div class="cat-grid" id="vprGrid"></div>
+      <p class="rules-note">💡 В викторине подсказки (эмодзи, картинка, «что это?», факт) можно открывать — но чем их меньше, тем больше очков. В тренажёре выбирай правильный ответ из четырёх.</p>
+    </div>
+  </section>
+
+  <section id="gameScreen" class="screen" hidden>
+    <div class="topbar">
+      <div class="topbar-left">
+        <button id="backBtn" class="back-btn" title="Вернуться в меню">← Назад</button>
+        <div class="progress-info"><span class="cat-pill" id="catPill">🎲</span> <span id="qLabel">Вопрос</span> <span id="qNum">1</span> из <span id="qTotal">10</span></div>
+      </div>
+      <div class="score-pill">⭐ <span id="scorePill">0</span></div>
+    </div>
+    <div class="progress-bar"><div id="progressFill"></div></div>
+
+    <div class="card question-card" id="questionCard">
+      <div class="grade-badge" id="gradeBadge" hidden></div>
+      <h2 class="q-title" id="qTitle">Что это? Назови</h2>
+      <button id="toggleOpts" class="toggle-btn" hidden>🙈 Скрыть варианты</button>
+      <div class="prompt" id="prompt" hidden></div>
+      <div class="passage" id="passage" hidden></div>
+      <div class="hints" id="hints"></div>
+      <div class="input-row" id="inputRow">
+        <input type="text" id="answerInput" placeholder="Впиши ответ…" autocomplete="off" />
+        <button id="checkBtn" class="btn btn-primary">✅ Проверить</button>
+      </div>
+      <div class="answers" id="options" hidden></div>
+      <div class="match-box" id="matchBox" hidden>
+        <div class="match-col" id="matchLeft"></div>
+        <div class="match-col" id="matchRight"></div>
+      </div>
+      <div class="block-box" id="blockBox" hidden></div>
+      <div class="feedback" id="feedback" hidden></div>
+      <div class="actions">
+        <button id="giveupBtn" class="giveup-btn" hidden>😔 Сдаюсь — покажи ответ</button>
+        <button id="nextBtn" class="btn btn-primary" hidden>Далее ➡️</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="resultScreen" class="screen" hidden>
+    <div class="card hero result">
+      <div class="result-emoji" id="resultEmoji">🏆</div>
+      <h1 id="resultTitle">Молодец!</h1>
+      <div class="stars" id="stars"></div>
+      <p class="score-final">Твой счёт: <span id="finalScore">0</span> очков</p>
+      <p class="result-msg" id="resultMsg"></p>
+      <button id="restartBtn" class="btn btn-primary">🔁 Играть ещё раз</button>
+      <button id="menuBtn" class="giveup-btn">← Выбрать другой раздел</button>
+    </div>
+  </section>
+</div>
+<script>
+const CATEGORIES = [
+  { id:'priroda', emoji:'🌿', title:'Природа и человек', desc:'Вещества, вода, воздух, растения, животные, здоровье' },
+  { id:'geografia', emoji:'🗺️', title:'Путешествия и страны', desc:'Города России, соседи, страны Европы и мира' },
+  { id:'istoriya', emoji:'🏛️', title:'История', desc:'Древняя Русь, Россия, всемирная история' },
+  { id:'mixed', emoji:'🎲', title:'Всё вперемешку', desc:'Вопросы из всех разделов' }
+];
+
+const pictures = {
+  water: `<svg viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg" role="img"><path d="M100 20 C130 55 150 80 150 100 A50 40 0 1 1 50 100 C50 80 70 55 100 20 Z" fill="#4fc3f7" stroke="#0288d1" stroke-width="3"/><path d="M70 100 A30 24 0 1 0 130 100 Z" fill="#e1f5fe"/><text x="82" y="60" font-size="22">💧</text></svg>`,
+  sun: `<svg viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg" role="img"><circle cx="100" cy="70" r="34" fill="#ffca28" stroke="#f9a825" stroke-width="3"/><g stroke="#f9a825" stroke-width="4" stroke-linecap="round"><path d="M100 16 V30"/><path d="M100 110 V124"/><path d="M46 70 H60"/><path d="M140 70 H154"/><path d="M60 30 L70 40"/><path d="M130 100 L140 110"/><path d="M140 30 L130 40"/><path d="M70 100 L60 110"/></g><circle cx="100" cy="70" r="7" fill="#fff"/></svg>`,
+  earth: `<svg viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg" role="img"><circle cx="100" cy="70" r="52" fill="#64b5f6" stroke="#1565c0" stroke-width="3"/><path d="M55 60 q10 18 0 34 q8 -6 14 -20 q-2 -12 -14 -14 Z" fill="#66bb6a"/><path d="M120 40 q12 8 18 22 q-10 6 -22 4 q-2 -14 4 -26 Z" fill="#66bb6a"/><path d="M140 88 q6 10 0 20 q-6 -4 -8 -12 q0 -8 8 -8 Z" fill="#66bb6a"/></svg>`,
+  tree: `<svg viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg" role="img"><rect x="94" y="88" width="14" height="34" fill="#8d6e63"/><circle cx="101" cy="60" r="34" fill="#66bb6a"/><circle cx="80" cy="72" r="22" fill="#81c784"/><circle cx="122" cy="72" r="22" fill="#4caf50"/></svg>`,
+  moon: `<svg viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg" role="img"><path d="M140 20 A52 52 0 1 0 140 120 A40 40 0 1 1 140 20 Z" fill="#ffe082" stroke="#f9a825" stroke-width="3"/><circle cx="120" cy="50" r="6" fill="#f9a825"/><circle cx="108" cy="80" r="4" fill="#f9a825"/></svg>`,
+  volcano: `<svg viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg" role="img"><path d="M40 120 L90 60 L120 120 Z" fill="#795548" stroke="#5d4037" stroke-width="3"/><path d="M70 60 L90 40 L105 62" fill="#ef5350"/><path d="M86 40 q6 -14 16 -12 q-2 10 -6 12 Z" fill="#ff7043"/><rect x="30" y="120" width="140" height="8" fill="#5d4037"/></svg>`,
+  compass: `<svg viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg" role="img"><circle cx="100" cy="70" r="50" fill="#fff" stroke="#37474f" stroke-width="4"/><path d="M100 30 L110 70 L100 110 L90 70 Z" fill="#e53935"/><path d="M100 30 L90 70 L100 110 L110 70 Z" fill="#fafafa"/><text x="92" y="28" font-size="16" fill="#37474f">С</text></svg>`,
+  globe: `<svg viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg" role="img"><circle cx="82" cy="70" r="46" fill="#90caf9" stroke="#1565c0" stroke-width="3"/><ellipse cx="82" cy="70" rx="16" ry="46" fill="none" stroke="#1565c0" stroke-width="2"/><path d="M36 70 h92" stroke="#1565c0" stroke-width="2"/><rect x="104" y="48" width="8" height="50" fill="#8d6e63" transform="rotate(-18 108 73)"/><rect x="150" y="20" width="26" height="10" rx="4" fill="#8d6e63"/></svg>`,
+  snowflake: `<svg viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg" role="img"><g stroke="#90caf9" stroke-width="4" stroke-linecap="round"><path d="M100 30 V110"/><path d="M58 58 L142 82"/><path d="M142 58 L58 82"/></g><g stroke="#64b5f6" stroke-width="3" stroke-linecap="round"><path d="M100 40 L92 48 M100 40 L108 48"/><path d="M100 100 L92 92 M100 100 L108 92"/></g></svg>`,
+  kremlin: `<svg viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg" role="img"><rect x="30" y="40" width="140" height="80" fill="#e57373"/><rect x="20" y="110" width="160" height="12" fill="#b71c1c"/><g fill="#b71c1c"><path d="M45 40 L55 12 L65 40 Z"/><path d="M95 40 L100 6 L105 40 Z"/><path d="M135 40 L145 12 L155 40 Z"/></g><rect x="90" y="76" width="20" height="34" fill="#7f0000"/></svg>`,
+  rocket: `<svg viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg" role="img"><path d="M100 20 Q120 50 120 90 L80 90 Q80 50 100 20 Z" fill="#e0e0e0" stroke="#757575" stroke-width="3"/><circle cx="100" cy="60" r="9" fill="#4fc3f7"/><path d="M80 90 L70 110 L90 92 Z" fill="#ff7043"/><path d="M120 90 L130 110 L110 92 Z" fill="#ff7043"/><path d="M92 100 Q100 120 108 100" stroke="#ff9800" stroke-width="6" fill="none" stroke-linecap="round"/></svg>`,
+  mushroom: `<svg viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg" role="img"><rect x="94" y="70" width="14" height="44" rx="6" fill="#fff3e0" stroke="#e0a800" stroke-width="2"/><path d="M50 70 Q50 26 100 26 Q150 26 150 70 Z" fill="#e53935" stroke="#b71c1c" stroke-width="3"/><circle cx="78" cy="52" r="5" fill="#fff"/><circle cx="106" cy="42" r="5" fill="#fff"/><circle cx="120" cy="58" r="4" fill="#fff"/></svg>`,
+  heart: `<svg viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg" role="img"><path d="M100 118 C60 90 40 66 40 48 C40 32 52 22 66 22 C80 22 92 32 100 44 C108 32 120 22 134 22 C148 22 160 32 160 48 C160 66 140 90 100 118 Z" fill="#ef5350"/><path d="M66 44 q8 -6 14 0" stroke="#ffcdd2" stroke-width="4" fill="none" stroke-linecap="round"/></svg>`,
+  leaf: `<svg viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg" role="img"><path d="M150 20 Q60 20 50 120 Q50 50 150 20 Z" fill="#66bb6a" stroke="#2e7d32" stroke-width="3"/><path d="M60 110 Q95 70 150 20" stroke="#2e7d32" stroke-width="2" fill="none"/></svg>`,
+  mountain: `<svg viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg" role="img"><path d="M20 120 L80 40 L120 120 Z" fill="#90a4ae" stroke="#546e7a" stroke-width="3"/><path d="M95 120 L140 55 L180 120 Z" fill="#b0bec5" stroke="#546e7a" stroke-width="3"/><path d="M80 40 L92 60 L70 60 Z" fill="#fff"/><path d="M140 55 L150 74 L132 74 Z" fill="#fff"/></svg>`
+};
+
+const QUESTIONS = [
+  {cat:'priroda',gr:3,ans:['вода'],em:'💧',pic:'water',au:'Это вещество',ln:'Она покрывает большую часть Земли и бывает в трёх состояниях',fact:'Вода нужна для жизни всех живых организмов.'},
+  {cat:'priroda',gr:3,ans:['воздух'],em:'💨',au:'Это смесь газов',ln:'Без него человек не проживёт и несколько минут',fact:'Воздух — смесь газов: азота, кислорода и углекислого газа.'},
+  {cat:'priroda',gr:3,ans:['кислород'],em:'🌬️',au:'Это газ',ln:'Он нужен всем для дыхания',fact:'Кислород — газ, которым дышат живые существа.'},
+  {cat:'priroda',gr:3,ans:['почва'],em:'🌱',au:'Это верхний слой земли',ln:'В ней есть перегной, песок и глина',fact:'Почва — верхний плодородный слой земли, в котором растут растения.'},
+  {cat:'priroda',gr:3,ans:['перегной'],em:'🍂',au:'Это часть почвы',ln:'Образуется из остатков растений и животных',fact:'Перегной делает почву плодородной.'},
+  {cat:'priroda',gr:3,ans:['гранит'],em:'⛰️',pic:'mountain',au:'Это горная порода',ln:'Состоит из полевого шпата, кварца и слюды',fact:'Гранит — прочная горная порода.'},
+  {cat:'priroda',gr:3,ans:['известняк'],em:'🪨',au:'Это полезное ископаемое',ln:'Из него делают мел и известь',fact:'Известняк — осадочная горная порода.'},
+  {cat:'priroda',gr:3,ans:['песок'],em:'⌛',au:'Это полезное ископаемое',ln:'Из него делают стекло',fact:'Песок используют в строительстве и для изготовления стекла.'},
+  {cat:'priroda',gr:3,ans:['глина'],em:'🏺',au:'Это полезное ископаемое',ln:'Из неё делают кирпичи и посуду',fact:'Глина — осадочная порода, из которой лепят посуду и кирпичи.'},
+  {cat:'priroda',gr:3,ans:['нефть'],em:'🛢️',au:'Это горючее полезное ископаемое',ln:'Из неё делают бензин',fact:'Нефть — жидкое горючее полезное ископаемое.'},
+  {cat:'priroda',gr:3,ans:['каменный уголь'],em:'⚫',au:'Это горючее полезное ископаемое',ln:'Он чёрного цвета и хорошо горит',fact:'Каменный уголь используют как топливо.'},
+  {cat:'priroda',gr:3,ans:['торф'],em:'🌾',au:'Это горючее полезное ископаемое',ln:'Образуется на болотах',fact:'Торф образуется из мха на болотах.'},
+  {cat:'priroda',gr:3,ans:['железная руда'],em:'🔩',au:'Это полезное ископаемое',ln:'Из неё выплавляют железо и сталь',fact:'Из железной руды получают металлы.'},
+  {cat:'priroda',gr:4,ans:['солнце'],em:'☀️',pic:'sun',au:'Это звезда',ln:'Даёт Земле свет и тепло',fact:'Солнце — ближайшая к Земле звезда.'},
+  {cat:'priroda',gr:4,ans:['луна'],em:'🌙',pic:'moon',au:'Это спутник Земли',ln:'Она светит отражённым солнечным светом',fact:'Луна — естественный спутник Земли.'},
+  {cat:'priroda',gr:4,ans:['земля','планета земля'],em:'🌍',pic:'earth',au:'Это планета',ln:'Третья от Солнца',fact:'Земля — единственная известная планета, на которой есть жизнь.'},
+  {cat:'priroda',gr:3,ans:['компас'],em:'🧭',pic:'compass',au:'Это прибор',ln:'Помогает найти стороны горизонта',fact:'Стрелка компаса всегда показывает на север.'},
+  {cat:'priroda',gr:3,ans:['горизонт'],em:'🌅',au:'Это линия',ln:'Где небо как будто сходится с землёй',fact:'Горизонт — видимая граница между небом и землёй.'},
+  {cat:'priroda',gr:3,ans:['глобус'],em:'🌐',pic:'globe',au:'Это модель',ln:'Уменьшенная модель Земли',fact:'Глобус — уменьшенная объёмная модель Земли.'},
+  {cat:'priroda',gr:3,ans:['карта'],em:'🗺️',au:'Это изображение',ln:'Уменьшенное изображение местности на плоскости',fact:'Карта показывает местность сверху в уменьшенном виде.'},
+  {cat:'priroda',gr:3,ans:['термометр'],em:'🌡️',au:'Это прибор',ln:'Им измеряют температуру',fact:'Термометр — прибор для измерения температуры.'},
+  {cat:'priroda',gr:3,ans:['круговорот воды'],em:'♻️',au:'Это явление природы',ln:'Вода испаряется и выпадает обратно дождём',fact:'Круговорот воды — непрерывное движение воды в природе.'},
+  {cat:'priroda',gr:3,ans:['испарение'],em:'💨',au:'Это превращение',ln:'Вода превращается в пар',fact:'При нагревании вода испаряется и превращается в пар.'},
+  {cat:'priroda',gr:3,ans:['растение'],em:'🌱',pic:'leaf',au:'Это живой организм',ln:'Само создаёт себе питание из света',fact:'Растения — живые организмы, которые питаются с помощью света.'},
+  {cat:'priroda',gr:3,ans:['гриб'],em:'🍄',pic:'mushroom',au:'Это царство природы',ln:'Не растение и не животное',fact:'Грибы — отдельное царство живой природы.'},
+  {cat:'priroda',gr:3,ans:['грибница'],em:'🕸️',au:'Это часть гриба',ln:'Находится под землёй',fact:'Грибница — подземная часть гриба, похожая на паутину.'},
+  {cat:'priroda',gr:3,ans:['мухомор'],em:'🍄',au:'Это ядовитый гриб',ln:'Красная шляпка с белыми точками',fact:'Мухомор — ядовитый гриб, его нельзя трогать и есть.'},
+  {cat:'priroda',gr:3,ans:['белый гриб','боровик'],em:'🍄',au:'Это съедобный гриб',ln:'Его ещё называют боровиком',fact:'Белый гриб — ценный съедобный гриб.'},
+  {cat:'priroda',gr:3,ans:['подосиновик'],em:'🍄',au:'Это съедобный гриб',ln:'Растёт под осиной',fact:'Подосиновик — съедобный гриб с оранжево-красной шляпкой.'},
+  {cat:'priroda',gr:3,ans:['бактерии'],em:'🦠',au:'Это мельчайшие живые существа',ln:'Их видно только в микроскоп',fact:'Бактерии — микроскопические живые организмы.'},
+  {cat:'priroda',gr:3,ans:['заповедник'],em:'🏞️',au:'Это охраняемое место',ln:'Там природа охраняется полностью',fact:'В заповеднике запрещена охота и хозяйственная деятельность.'},
+  {cat:'priroda',gr:3,ans:['красная книга'],em:'📕',au:'Это книга',ln:'В неё заносят редкие растения и животных',fact:'Красная книга — список редких и исчезающих видов.'},
+  {cat:'priroda',gr:3,ans:['цепь питания'],em:'🔗',au:'Это связь в природе',ln:'Показывает, кто кого ест',fact:'Цепь питания показывает, кто чем питается в природе.'},
+  {cat:'priroda',gr:3,ans:['хищник'],em:'🦊',au:'Это животное',ln:'Охотится на других животных',fact:'Хищники — животные, которые питаются другими животными.'},
+  {cat:'priroda',gr:3,ans:['млекопитающие'],em:'🐻',au:'Это группа животных',ln:'Кормят детёнышей молоком',fact:'Млекопитающие выкармливают детёнышей молоком.'},
+  {cat:'priroda',gr:3,ans:['земноводные'],em:'🐸',au:'Это группа животных',ln:'Живут и в воде, и на суше',fact:'Земноводные (амфибии) живут в двух средах.'},
+  {cat:'priroda',gr:3,ans:['пресмыкающиеся'],em:'🦎',au:'Это группа животных',ln:'Тело покрыто чешуёй',fact:'Пресмыкающиеся (рептилии) имеют чешую.'},
+  {cat:'priroda',gr:3,ans:['насекомые'],em:'🐝',au:'Это группа животных',ln:'У них шесть ног',fact:'У насекомых шесть ног.'},
+  {cat:'priroda',gr:3,ans:['птицы'],em:'🐦',au:'Это группа животных',ln:'Тело покрыто перьями',fact:'Птицы — животные с перьями и крыльями.'},
+  {cat:'priroda',gr:3,ans:['рыбы'],em:'🐟',au:'Это группа животных',ln:'Дышат жабрами',fact:'Рыбы дышат растворённым в воде кислородом через жабры.'},
+  {cat:'priroda',gr:3,ans:['скелет'],em:'🦴',au:'Это опора тела',ln:'Состоит из костей',fact:'Скелет — опора тела человека и животных.'},
+  {cat:'priroda',gr:3,ans:['сердце'],em:'❤️',pic:'heart',au:'Это орган',ln:'Перекачивает кровь по телу',fact:'Сердце — орган, который качает кровь.'},
+  {cat:'priroda',gr:3,ans:['лёгкие','легкие'],em:'🫁',au:'Это орган дыхания',ln:'Через них мы дышим',fact:'Лёгкие — органы дыхания человека.'},
+  {cat:'priroda',gr:3,ans:['желудок'],em:'🍽️',au:'Это орган',ln:'В нём переваривается пища',fact:'В желудке пища переваривается с помощью желудочного сока.'},
+  {cat:'priroda',gr:3,ans:['мозг'],em:'🧠',au:'Это орган',ln:'Управляет всем телом',fact:'Головной мозг управляет работой всего организма.'},
+  {cat:'priroda',gr:3,ans:['глаза'],em:'👀',au:'Это орган чувств',ln:'Им мы видим',fact:'Глаза — орган зрения.'},
+  {cat:'priroda',gr:3,ans:['уши'],em:'👂',au:'Это орган чувств',ln:'Им мы слышим',fact:'Уши — орган слуха.'},
+  {cat:'priroda',gr:3,ans:['нос'],em:'👃',au:'Это орган чувств',ln:'Им мы чувствуем запахи',fact:'Нос — орган обоняния.'},
+  {cat:'priroda',gr:3,ans:['язык'],em:'👅',au:'Это орган чувств',ln:'Им мы чувствуем вкус',fact:'Язык — орган вкуса.'},
+  {cat:'priroda',gr:3,ans:['кожа'],em:'✋',au:'Это орган',ln:'Защищает тело и чувствует прикосновения',fact:'Кожа — орган осязания и защита организма.'},
+  {cat:'priroda',gr:3,ans:['витамины'],em:'🍊',au:'Это вещества',ln:'Нужны для здоровья',fact:'Витамины содержатся в овощах и фруктах.'},
+  {cat:'priroda',gr:3,ans:['полезные ископаемые'],em:'⛏️',au:'Это богатства земли',ln:'Их добывают из недр земли',fact:'Полезные ископаемые — природные богатства, которые добывают из земли.'},
+  {cat:'priroda',gr:3,ans:['растениеводство'],em:'🌾',au:'Это отрасль хозяйства',ln:'Выращивание культурных растений',fact:'Растениеводство — выращивание культурных растений.'},
+  {cat:'priroda',gr:3,ans:['животноводство'],em:'🐄',au:'Это отрасль хозяйства',ln:'Разведение домашних животных',fact:'Животноводство — разведение домашних животных.'},
+  {cat:'priroda',gr:3,ans:['деньги'],em:'💰',au:'Это средство обмена',ln:'На них покупают товары и услуги',fact:'Деньги — средство обмена и оплаты.'},
+  {cat:'priroda',gr:3,ans:['экология'],em:'♻️',au:'Это наука',ln:'Наука о связях в природе и её охране',fact:'Экология — наука о связях между живыми организмами и окружающей средой.'},
+  {cat:'priroda',gr:3,ans:['природа'],em:'🌳',au:'Это то, что нас окружает',ln:'Всё, что не создано человеком',fact:'Природа — всё, что окружает человека и не создано им.'},
+  {cat:'priroda',gr:3,ans:['вещество'],em:'🧪',au:'Это то, из чего состоят тела',ln:'Бывает твёрдым, жидким и газообразным',fact:'Тела состоят из веществ.'},
+  {cat:'priroda',gr:3,ans:['светофор'],em:'🚦',au:'Это устройство на дороге',ln:'Регулирует движение машин и пешеходов',fact:'Светофор регулирует дорожное движение.'},
+  {cat:'priroda',gr:3,ans:['пешеход'],em:'🚶',au:'Это участник движения',ln:'Человек, идущий по дороге или тротуару',fact:'Пешеход — человек, который ходит пешком.'},
+  {cat:'geografia',gr:4,ans:['материк','континент'],em:'🗺️',au:'Это участок суши',ln:'Огромный участок суши, окружённый водой',fact:'Материки — крупнейшие участки суши Земли.'},
+  {cat:'geografia',gr:4,ans:['евразия'],em:'🌍',au:'Это материк',ln:'Самый большой материк, на нём находится Россия',fact:'Евразия — самый большой материк Земли.'},
+  {cat:'geografia',gr:4,ans:['африка'],em:'🦁',au:'Это материк',ln:'Самый жаркий материк',fact:'Африка — самый жаркий материк Земли.'},
+  {cat:'geografia',gr:4,ans:['антарктида'],em:'🧊',pic:'snowflake',au:'Это материк',ln:'Самый холодный, покрыт льдом',fact:'Антарктида — самый холодный материк, покрытый льдом.'},
+  {cat:'geografia',gr:4,ans:['австралия'],em:'🦘',au:'Это материк',ln:'Самый маленький материк',fact:'Австралия — самый маленький материк Земли.'},
+  {cat:'geografia',gr:4,ans:['тихий океан'],em:'🌊',au:'Это океан',ln:'Самый большой и глубокий океан',fact:'Тихий океан — самый большой океан Земли.'},
+  {cat:'geografia',gr:4,ans:['северный ледовитый океан'],em:'❄️',au:'Это океан',ln:'Самый холодный океан',fact:'Северный Ледовитый океан — самый холодный и маленький.'},
+  {cat:'geografia',gr:4,ans:['москва'],em:'🏙️',au:'Это город',ln:'Столица России',fact:'Москва — столица России.'},
+  {cat:'geografia',gr:3,ans:['санкт-петербург'],em:'🏛️',au:'Это город',ln:'Основан Петром Первым, «северная столица»',fact:'Санкт-Петербург основал Пётр Первый в 1703 году.'},
+  {cat:'geografia',gr:3,ans:['золотое кольцо'],em:'💍',au:'Это маршрут',ln:'Знаменитые древние города России',fact:'Золотое кольцо — туристический маршрут по древним городам России.'},
+  {cat:'geografia',gr:3,ans:['ярославль'],em:'🐻',au:'Это город Золотого кольца',ln:'Основан Ярославом Мудрым',fact:'Ярославль — город на Волге, входит в Золотое кольцо.'},
+  {cat:'geografia',gr:3,ans:['суздаль'],em:'⛪',au:'Это город Золотого кольца',ln:'Знаменит белокаменными храмами',fact:'Суздаль — город-музей Золотого кольца.'},
+  {cat:'geografia',gr:4,ans:['россия'],em:'🇷🇺',au:'Это страна',ln:'Самая большая страна в мире',fact:'Россия — самая большая по площади страна мира.'},
+  {cat:'geografia',gr:3,ans:['финляндия'],em:'🇫🇮',au:'Это сосед России',ln:'Страна озёр на севере Европы',fact:'Финляндия — северный сосед России, страна озёр.'},
+  {cat:'geografia',gr:3,ans:['норвегия'],em:'🏔️',au:'Это сосед России',ln:'Страна фьордов',fact:'Норвегия — страна на севере Европы, знаменита фьордами.'},
+  {cat:'geografia',gr:3,ans:['китай'],em:'🐉',au:'Это сосед России',ln:'Там изобрели бумагу и порох',fact:'Китай — страна с самой большой численностью населения.'},
+  {cat:'geografia',gr:3,ans:['франция'],em:'🗼',au:'Это страна Европы',ln:'Столица — Париж, там Эйфелева башня',fact:'Франция — страна в Европе, столица Париж.'},
+  {cat:'geografia',gr:3,ans:['великобритания'],em:'🕰️',au:'Это страна Европы',ln:'Столица — Лондон, там Биг-Бен',fact:'Великобритания — островное государство, столица Лондон.'},
+  {cat:'geografia',gr:3,ans:['германия'],em:'🏰',au:'Это страна Европы',ln:'Находится в центре Европы',fact:'Германия — страна в центре Европы, столица Берлин.'},
+  {cat:'geografia',gr:3,ans:['италия'],em:'🏛️',au:'Это страна Европы',ln:'Столица — Рим, там Колизей',fact:'Италия — страна на юге Европы, столица Рим.'},
+  {cat:'geografia',gr:3,ans:['греция'],em:'🏺',au:'Это страна Европы',ln:'Родина Олимпийских игр',fact:'Греция — родина Олимпийских игр.'},
+  {cat:'geografia',gr:3,ans:['египет'],em:'🐪',au:'Это страна',ln:'Страна пирамид',fact:'Египет — страна на севере Африки, знаменит пирамидами.'},
+  {cat:'geografia',gr:4,ans:['экватор'],em:'🌐',au:'Это воображаемая линия',ln:'Делит Землю на два полушария',fact:'Экватор делит Землю на Северное и Южное полушария.'},
+  {cat:'geografia',gr:4,ans:['полюс'],em:'🧊',au:'Это точка Земли',ln:'Самая северная или южная точка',fact:'Полюса — самые северные и южные точки Земли.'},
+  {cat:'geografia',gr:4,ans:['масштаб'],em:'📏',au:'Это число',ln:'Показывает, во сколько раз уменьшено расстояние',fact:'Масштаб показывает, во сколько раз уменьшены размеры на карте.'},
+  {cat:'geografia',gr:4,ans:['вулкан'],em:'🌋',pic:'volcano',au:'Это природное явление',ln:'Гора, извергающая лаву',fact:'Вулкан — гора, из которой извергается лава.'},
+  {cat:'geografia',gr:4,ans:['океан'],em:'🌊',au:'Это водоём',ln:'Огромное водное пространство',fact:'Океаны — крупнейшие водоёмы Земли.'},
+  {cat:'geografia',gr:4,ans:['море'],em:'🌊',au:'Это водоём',ln:'Часть океана, вдающаяся в сушу',fact:'Море — часть океана, отделённая сушей или островами.'},
+  {cat:'geografia',gr:4,ans:['река'],em:'🏞️',au:'Это водоём',ln:'Течёт по руслу',fact:'Река — постоянный поток воды, текущий по руслу.'},
+  {cat:'geografia',gr:4,ans:['озеро'],em:'🏞️',au:'Это водоём',ln:'Замкнутое углубление с водой',fact:'Озеро — замкнутый водоём, заполненный водой.'},
+  {cat:'geografia',gr:4,ans:['гора'],em:'⛰️',pic:'mountain',au:'Это форма рельефа',ln:'Сильно возвышается над землёй',fact:'Горы — сильно возвышающиеся участки земной поверхности.'},
+  {cat:'geografia',gr:4,ans:['равнина'],em:'🌾',au:'Это форма рельефа',ln:'Ровная поверхность',fact:'Равнины — ровные участки земной поверхности.'},
+  {cat:'geografia',gr:4,ans:['волга'],em:'🚢',au:'Это река',ln:'Самая длинная река Европы, течёт в России',fact:'Волга — самая длинная река Европы.'},
+  {cat:'geografia',gr:4,ans:['байкал'],em:'🏞️',au:'Это озеро',ln:'Самое глубокое озеро в мире',fact:'Байкал — самое глубокое озеро мира.'},
+  {cat:'geografia',gr:4,ans:['уральские горы'],em:'⛰️',au:'Это горы',ln:'Разделяют Европу и Азию',fact:'Уральские горы разделяют Европу и Азию.'},
+  {cat:'istoriya',gr:4,ans:['древний египет'],em:'🐪',au:'Это древняя цивилизация',ln:'Страна на берегах Нила, строила пирамиды',fact:'Древний Египет — цивилизация на берегах реки Нил.'},
+  {cat:'istoriya',gr:4,ans:['пирамиды'],em:'🔺',au:'Это сооружения',ln:'Гробницы фараонов',fact:'Пирамиды — гробницы египетских фараонов.'},
+  {cat:'istoriya',gr:4,ans:['древняя греция'],em:'🏛️',au:'Это древняя цивилизация',ln:'Родина демократии и Олимпийских игр',fact:'Древняя Греция — родина Олимпийских игр и демократии.'},
+  {cat:'istoriya',gr:4,ans:['древний рим'],em:'🏟️',au:'Это древняя цивилизация',ln:'Город, ставший огромной империей',fact:'Древний Рим — могущественная империя древности.'},
+  {cat:'istoriya',gr:4,ans:['колизей'],em:'🏟️',au:'Это сооружение',ln:'Амфитеатр в Риме',fact:'Колизей — древний амфитеатр в Риме.'},
+  {cat:'istoriya',gr:4,ans:['средние века'],em:'🏰',au:'Это эпоха',ln:'Время рыцарей и замков',fact:'Средние века — эпоха рыцарей, замков и городов.'},
+  {cat:'istoriya',gr:4,ans:['рыцарь'],em:'🛡️',au:'Это воин',ln:'Воевал в доспехах в средние века',fact:'Рыцари — конные воины в доспехах.'},
+  {cat:'istoriya',gr:4,ans:['замок'],em:'🏰',au:'Это жилище',ln:'Крепость рыцаря',fact:'Замок — укреплённое жилище феодала.'},
+  {cat:'istoriya',gr:4,ans:['новое время'],em:'⛵',au:'Это эпоха',ln:'Время, когда открыли Америку',fact:'Новое время началось с Великих географических открытий.'},
+  {cat:'istoriya',gr:4,ans:['христофор колумб'],em:'⛵',au:'Это мореплаватель',ln:'Открыл Америку',fact:'Христофор Колумб открыл Америку в 1492 году.'},
+  {cat:'istoriya',gr:4,ans:['фернан магеллан'],em:'🚢',au:'Это мореплаватель',ln:'Совершил первое кругосветное путешествие',fact:'Экспедиция Магеллана первой обогнула Землю.'},
+  {cat:'istoriya',gr:4,ans:['первобытные люди'],em:'🪨',au:'Это древнейшие люди',ln:'Жили в пещерах, охотились на мамонтов',fact:'Первобытные люди — древнейшие предки человека.'},
+  {cat:'istoriya',gr:4,ans:['славяне'],em:'🌾',au:'Это наши предки',ln:'Жили по берегам рек, занимались земледелием',fact:'Славяне — предки русского народа.'},
+  {cat:'istoriya',gr:4,ans:['древняя русь'],em:'🏰',au:'Это государство',ln:'Возникло более тысячи лет назад',fact:'Древняя Русь — государство восточных славян.'},
+  {cat:'istoriya',gr:4,ans:['рюрик'],em:'👑',au:'Это князь',ln:'По легенде, был призван править',fact:'Рюрик — первый князь, по летописи призванный славянами.'},
+  {cat:'istoriya',gr:4,ans:['князь владимир'],em:'⛪',au:'Это князь',ln:'Крестил Русь',fact:'Князь Владимир крестил Русь в 988 году.'},
+  {cat:'istoriya',gr:4,ans:['крещение руси'],em:'⛪',au:'Это событие',ln:'Принятие христианства',fact:'Крещение Руси произошло в 988 году.'},
+  {cat:'istoriya',gr:4,ans:['ярослав мудрый'],em:'📜',au:'Это князь',ln:'При нём Русь расцвела, создал свод законов',fact:'Ярослав Мудрый — князь, при котором Древняя Русь достигла расцвета.'},
+  {cat:'istoriya',gr:4,ans:['киев'],em:'🏛️',au:'Это город',ln:'Столица Древней Руси',fact:'Киев — столица Древней Руси.'},
+  {cat:'istoriya',gr:4,ans:['новгород'],em:'🏘️',au:'Это город',ln:'Древний город на реке Волхов',fact:'Новгород — один из древнейших городов Руси.'},
+  {cat:'istoriya',gr:4,ans:['берестяные грамоты'],em:'📜',au:'Это письма',ln:'Писали на коре берёзы',fact:'Берестяные грамоты — письма на берёзовой коре.'},
+  {cat:'istoriya',gr:4,ans:['летопись'],em:'📖',au:'Это запись',ln:'Запись событий по годам',fact:'Летопись — погодовая запись исторических событий.'},
+  {cat:'istoriya',gr:4,ans:['нестор'],em:'✍️',au:'Это монах',ln:'Монах-летописец',fact:'Нестор — монах, автор «Повести временных лет».'},
+  {cat:'istoriya',gr:4,ans:['повесть временных лет'],em:'📖',au:'Это летопись',ln:'Самая знаменитая русская летопись',fact:'«Повесть временных лет» — главная летопись Древней Руси.'},
+  {cat:'istoriya',gr:4,ans:['александр невский'],em:'⚔️',au:'Это князь',ln:'Победил шведов и крестоносцев',fact:'Александр Невский победил в Невской битве и Ледовом побоище.'},
+  {cat:'istoriya',gr:4,ans:['ледовое побоище'],em:'❄️',au:'Это битва',ln:'Битва на Чудском озере',fact:'Ледовое побоище — битва на льду Чудского озера в 1242 году.'},
+  {cat:'istoriya',gr:4,ans:['дмитрий донской'],em:'⚔️',au:'Это князь',ln:'Победил в Куликовской битве',fact:'Дмитрий Донской — князь, победивший Мамая.'},
+  {cat:'istoriya',gr:4,ans:['куликовская битва'],em:'🛡️',au:'Это битва',ln:'Битва с войском Мамая',fact:'Куликовская битва произошла в 1380 году на Дону.'},
+  {cat:'istoriya',gr:4,ans:['иван третий','иван 3'],em:'👑',au:'Это великий князь',ln:'Объединил русские земли, освободил от Орды',fact:'Иван III завершил освобождение Руси от ордынского ига.'},
+  {cat:'istoriya',gr:4,ans:['иван грозный'],em:'👑',au:'Это царь',ln:'Первый русский царь',fact:'Иван Грозный — первый царь всея Руси.'},
+  {cat:'istoriya',gr:4,ans:['иван фёдоров','иван федоров'],em:'📚',au:'Это мастер',ln:'Первый русский книгопечатник',fact:'Иван Фёдоров напечатал первую русскую книгу.'},
+  {cat:'istoriya',gr:4,ans:['пётр первый','петр 1','петр первый'],em:'⛵',au:'Это царь',ln:'Основал Санкт-Петербург, «прорубил окно в Европу»',fact:'Пётр Первый — царь-реформатор, основатель флота и Петербурга.'},
+  {cat:'istoriya',gr:4,ans:['михаил ломоносов'],em:'🔬',au:'Это учёный',ln:'Великий русский учёный',fact:'Ломоносов — великий русский учёный-энциклопедист.'},
+  {cat:'istoriya',gr:4,ans:['екатерина вторая','екатерина 2'],em:'👑',au:'Это императрица',ln:'При ней построили Эрмитаж',fact:'Екатерина II — императрица, при которой Россия окрепла.'},
+  {cat:'istoriya',gr:4,ans:['отечественная война 1812 года','война 1812 года'],em:'🔥',au:'Это война',ln:'Война с Наполеоном',fact:'В 1812 году Россия воевала с армией Наполеона.'},
+  {cat:'istoriya',gr:4,ans:['наполеон'],em:'🎖️',au:'Это император',ln:'Французский император, напавший на Россию',fact:'Наполеон Бонапарт — французский император.'},
+  {cat:'istoriya',gr:4,ans:['михаил кутузов'],em:'🎖️',au:'Это полководец',ln:'Командовал в войне 1812 года',fact:'Кутузов — главнокомандующий русской армией в 1812 году.'},
+  {cat:'istoriya',gr:4,ans:['бородинское сражение'],em:'💥',au:'Это сражение',ln:'Главное сражение войны 1812 года',fact:'Бородинское сражение — крупнейшая битва Отечественной войны 1812 года.'},
+  {cat:'istoriya',gr:4,ans:['николай второй','николай 2'],em:'👑',au:'Это император',ln:'Последний российский император',fact:'Николай II — последний император России.'},
+  {cat:'istoriya',gr:4,ans:['великая отечественная война'],em:'🎖️',au:'Это война',ln:'Война с фашистами 1941–1945 годов',fact:'Великая Отечественная война длилась с 1941 по 1945 год.'},
+  {cat:'istoriya',gr:4,ans:['день победы'],em:'🎉',au:'Это праздник',ln:'Отмечается 9 мая',fact:'День Победы отмечают 9 мая.'},
+  {cat:'istoriya',gr:4,ans:['георгий жуков'],em:'🎖️',au:'Это полководец',ln:'Маршал, командовал в Великой Отечественной войне',fact:'Георгий Жуков — маршал, полководец Великой Отечественной войны.'},
+  {cat:'istoriya',gr:4,ans:['юрий гагарин'],em:'🚀',pic:'rocket',au:'Это космонавт',ln:'Первый человек в космосе',fact:'Юрий Гагарин первым полетел в космос 12 апреля 1961 года.'},
+  {cat:'istoriya',gr:4,ans:['космос'],em:'🌌',au:'Это пространство',ln:'Находится за пределами Земли',fact:'Космос — пространство за пределами земной атмосферы.'},
+  {cat:'istoriya',gr:4,ans:['герб'],em:'🛡️',au:'Это символ государства',ln:'Отличительный знак страны',fact:'Герб — официальный символ государства.'},
+  {cat:'istoriya',gr:4,ans:['флаг'],em:'🚩',au:'Это символ государства',ln:'Полотнище определённых цветов',fact:'Флаг — символ государства.'},
+  {cat:'istoriya',gr:4,ans:['гимн'],em:'🎵',au:'Это символ государства',ln:'Торжественная песня страны',fact:'Гимн — торжественная песня, символ государства.'},
+  {cat:'istoriya',gr:4,ans:['конституция'],em:'📜',au:'Это закон',ln:'Основной закон страны',fact:'Конституция — основной закон государства.'}
+];
+
+const TEXT_A = 'Вода — самое распространённое вещество на Земле. Она покрывает большую часть поверхности планеты. Вода бывает в трёх состояниях: жидком, твёрдом (лёд) и газообразном (пар). Вода необходима всем живым организмам. Человек без воды не может прожить и нескольких дней.';
+const TEXT_B = 'Животные делятся на несколько групп. Млекопитающие кормят детёнышей молоком. Птицы покрыты перьями и откладывают яйца. Рыбы дышат жабрами и живут в воде. У насекомых шесть ног. Каждая группа животных важна для природы.';
+const TEXT_C = 'Древняя Русь возникла более тысячи лет назад. Столицей государства был город Киев. В 988 году князь Владимир крестил Русь — страна приняла христианство. При Ярославе Мудром Древняя Русь достигла расцвета. Летописцы записывали важные события по годам.';
+const TEXT_D = 'В России несколько природных зон. На севере — арктические пустыни и тундра, там очень холодно. Южнее — леса, где растут ели, сосны и берёзы. Ещё южнее — степи с травянистыми растениями. Самая южная зона — субтропики, там тепло даже зимой.';
+const TEXT_E = 'Пётр Первый — царь, который много сделал для России. Он основал город Санкт-Петербург на берегу Невы и построил морской флот. Говорят, что Пётр «прорубил окно в Европу»: Россия стала сильной морской державой.';
+const TEXT_F = '12 апреля 1961 года Юрий Гагарин стал первым человеком, полетевшим в космос. Он облетел Землю на корабле «Восток». С тех пор 12 апреля в нашей стране отмечают День космонавтики.';
+
+const VPR = [
+  { id:'zony', icon:'🏷️', title:'Природные зоны', desc:'Определи природную зону России', questions:[
+    {q:'Какая природная зона самая северная в России?',opts:['Арктические пустыни','Степь','Тайга','Субтропики'],ans:0,why:'На самом севере России лежит ледяная зона — арктические пустыни.'},
+    {q:'Какая зона почти весь год покрыта льдом и снегом?',opts:['Арктические пустыни','Леса','Степь','Субтропики'],ans:0,why:'В арктических пустынях очень холодно, лёд и снег почти не тают.'},
+    {q:'Какое животное живёт в арктических пустынях?',opts:['Белый медведь','Верблюд','Бурый медведь','Лось'],ans:0,why:'Белый медведь живёт среди льдов Крайнего Севера.'},
+    {q:'В какой зоне растут мхи, лишайники и карликовые берёзы?',opts:['Тундра','Степь','Пустыня','Тайга'],ans:0,why:'В тундре короткое холодное лето, поэтому деревья там карликовые.'},
+    {q:'Какое животное — житель тундры?',opts:['Северный олень','Верблюд','Тушканчик','Обезьяна'],ans:0,why:'Северный олень пасётся в тундре и ест ягель.'},
+    {q:'Как называется «олений мох», которым питаются олени?',opts:['Ягель','Ковыль','Саксаул','Мох сфагнум'],ans:0,why:'Ягель — лишайник, главный корм северных оленей.'},
+    {q:'Какая природная зона занимает больше всего места в России?',opts:['Леса (тайга)','Степь','Тундра','Пустыня'],ans:0,why:'Леса — самая большая природная зона России.'},
+    {q:'В какой зоне растут ели, сосны и лиственницы?',opts:['Тайга','Степь','Тундра','Субтропики'],ans:0,why:'Тайга — зона хвойных лесов.'},
+    {q:'Какое хвойное дерево сбрасывает хвою на зиму?',opts:['Лиственница','Ель','Сосна','Кедр'],ans:0,why:'Лиственница — единственное хвойное дерево, сбрасывающее хвою на зиму.'},
+    {q:'В какой зоне растут берёзы, дубы и клёны?',opts:['Смешанные леса','Тундра','Степь','Арктические пустыни'],ans:0,why:'В смешанных лесах растут и хвойные, и лиственные деревья.'},
+    {q:'Какая зона расположена южнее лесов и покрыта травами?',opts:['Степь','Тундра','Тайга','Арктические пустыни'],ans:0,why:'Степь — безлесная зона, покрытая травянистыми растениями.'},
+    {q:'Какое растение характерно для степи?',opts:['Ковыль','Ягель','Мох','Пальма'],ans:0,why:'Ковыль — степная трава с пушистыми колосьями.'},
+    {q:'Какое животное живёт в степи?',opts:['Суслик','Белый медведь','Морж','Олень'],ans:0,why:'Суслик — грызун, живущий в степных норах.'},
+    {q:'В какой зоне жаркое лето, мало дождей и есть барханы?',opts:['Пустыня','Тундра','Тайга','Субтропики'],ans:0,why:'Пустыни — засушливые места с песчаными барханами.'},
+    {q:'Какое растение приспособилось к жизни в пустыне?',opts:['Верблюжья колючка','Берёза','Ель','Мох'],ans:0,why:'Верблюжья колючка имеет длинные корни и достаёт воду глубоко.'},
+    {q:'Какое животное — житель пустыни?',opts:['Верблюд','Северный олень','Песец','Белый медведь'],ans:0,why:'Верблюд может долго обходиться без воды.'},
+    {q:'Какая природная зона самая южная в России, у Чёрного моря?',opts:['Субтропики','Тундра','Тайга','Степь'],ans:0,why:'Субтропики находятся на Черноморском побережье Кавказа.'},
+    {q:'Какие растения растут в субтропиках?',opts:['Пальмы и кипарисы','Ели и сосны','Мхи и лишайники','Ковыль'],ans:0,why:'В субтропиках тёплый климат, растут пальмы, кипарисы, магнолии.'},
+    {q:'Где живёт песец?',opts:['В тундре','В пустыне','В степи','В субтропиках'],ans:0,why:'Песец — полярная лисица, живёт в тундре.'},
+    {q:'Где живёт тушканчик?',opts:['В пустыне и степи','В тундре','В тайге','В Арктике'],ans:0,why:'Тушканчик — грызун, обитающий в степях и пустынях.'},
+    {q:'В какой зоне почва скована вечной мерзлотой?',opts:['В тундре','В степи','В субтропиках','В пустыне'],ans:0,why:'В тундре почва не оттаивает даже летом — это вечная мерзлота.'},
+    {q:'В какой зоне живут моржи и тюлени?',opts:['В арктических пустынях','В степи','В тайге','В пустыне'],ans:0,why:'Моржи и тюлени живут в холодных морях у ледяной зоны.'},
+    {q:'Какое дерево растёт в тайге?',opts:['Ель','Пальма','Дуб','Берёза карельская'],ans:0,why:'Ель — хвойное дерево, типичное для тайги.'},
+    {q:'В какой зоне живёт бурый медведь?',opts:['В лесах','В пустыне','В Арктике','В степи'],ans:0,why:'Бурый медведь — житель лесов.'},
+    {q:'В какой зоне летом бывают белые ночи?',opts:['За полярным кругом','В степи','В пустыне','В субтропиках'],ans:0,why:'За полярным кругом летом солнце не заходит за горизонт.'},
+    {q:'В какой зоне живёт лемминг?',opts:['В тундре','В пустыне','В субтропиках','В степи'],ans:0,why:'Лемминг — маленький грызун, живущий в тундре.'},
+    {q:'В какой зоне растёт саксаул?',opts:['В пустыне','В тайге','В тундре','В субтропиках'],ans:0,why:'Саксаул — дерево пустыни с очень глубокими корнями.'},
+    {q:'В какой зоне самое разнообразное животное и растительное?',opts:['В широколиственных лесах','В Арктике','В пустыне','В тундре'],ans:0,why:'В широколиственных лесах мягкий климат и много разных видов.'},
+    {q:'Какая зона — «царство льда и снега»?',opts:['Арктические пустыни','Степь','Тайга','Субтропики'],ans:0,why:'Арктические пустыни называют царством льда и снега.'},
+    {q:'В какой зоне жаркое сухое лето и холодная малоснежная зима?',opts:['В степи','В тундре','В субтропиках','В тайге'],ans:0,why:'Для степи характерны жаркое лето и холодная зима.'},
+    {q:'Какие деревья растут в субтропиках?',opts:['Магнолии','Лиственницы','Карликовые берёзы','Саксаул'],ans:0,why:'Магнолия — растение субтропиков.'},
+    {q:'В какой зоне растут карликовые ивы?',opts:['В тундре','В пустыне','В степи','В субтропиках'],ans:0,why:'В тундре деревья низкие, стелются по земле.'},
+    {q:'Какое животное обитает в тайге?',opts:['Рысь','Верблюд','Морж','Тушканчик'],ans:0,why:'Рысь — хищник, живущий в таёжных лесах.'},
+    {q:'В какой зоне лето короткое и прохладное, а зима длинная?',opts:['В тундре','В субтропиках','В пустыне','В степи'],ans:0,why:'В тундре короткое лето и длинная холодная зима.'}
+  ]},
+  { id:'iskopaemye', icon:'⛏️', title:'Полезные ископаемые', desc:'Вещества, горные породы и их использование', questions:[
+    {q:'Что такое полезные ископаемые?',opts:['Богатства, которые добывают из недр земли','Только нефть и газ','Растения в поле','Вода в реке'],ans:0,why:'Полезные ископаемые — природные богатства, добываемые из земли.'},
+    {q:'Из чего делают бензин?',opts:['Из нефти','Из песка','Из глины','Из торфа'],ans:0,why:'Бензин получают из нефти.'},
+    {q:'Какое полезное ископаемое жидкое и горючее?',opts:['Нефть','Каменный уголь','Гранит','Песок'],ans:0,why:'Нефть — жидкое горючее полезное ископаемое.'},
+    {q:'Какое полезное ископаемое твёрдое, чёрное и хорошо горит?',opts:['Каменный уголь','Нефть','Песок','Глина'],ans:0,why:'Каменный уголь — твёрдое горючее ископаемое чёрного цвета.'},
+    {q:'Из чего делают кирпичи?',opts:['Из глины','Из нефти','Из песка','Из угля'],ans:0,why:'Кирпичи делают из глины.'},
+    {q:'Из чего делают стекло?',opts:['Из песка','Из глины','Из нефти','Из угля'],ans:0,why:'Стекло варят из песка.'},
+    {q:'Какое полезное ископаемое образуется на болотах?',opts:['Торф','Гранит','Нефть','Песок'],ans:0,why:'Торф образуется на болотах из мха.'},
+    {q:'Из чего выплавляют железо и сталь?',opts:['Из железной руды','Из глины','Из нефти','Из песка'],ans:0,why:'Из железной руды выплавляют металлы.'},
+    {q:'Какая горная порода состоит из полевого шпата, кварца и слюды?',opts:['Гранит','Известняк','Песок','Торф'],ans:0,why:'Гранит состоит из полевого шпата, кварца и слюды.'},
+    {q:'Из чего делают мел и известь?',opts:['Из известняка','Из гранита','Из торфа','Из нефти'],ans:0,why:'Мел и известь получают из известняка.'},
+    {q:'Какое полезное ископаемое добывают в шахтах?',opts:['Каменный уголь','Песок','Глину','Торф'],ans:0,why:'Каменный уголь добывают в шахтах под землёй.'},
+    {q:'Какое полезное ископаемое добывают из скважин?',opts:['Нефть','Песок','Гранит','Глину'],ans:0,why:'Нефть добывают из скважин, пробуренных в земле.'},
+    {q:'Что используют как топливо для печей?',opts:['Уголь','Песок','Глина','Гранит'],ans:0,why:'Уголь — топливо, которое хорошо горит.'},
+    {q:'Какое полезное ископаемое сыпучее, из него делают стекло?',opts:['Песок','Глина','Нефть','Торф'],ans:0,why:'Песок — сыпучее полезное ископаемое для стекла.'},
+    {q:'Из чего делают посуду (тарелки, чашки)?',opts:['Из глины','Из нефти','Из угля','Из торфа'],ans:0,why:'Посуду лепят из глины и обжигают.'},
+    {q:'Какое полезное ископаемое используют в строительстве для прочности?',opts:['Гранит','Торф','Нефть','Уголь'],ans:0,why:'Гранит — прочный строительный материал.'},
+    {q:'Что образуется из остатков древних растений под землёй?',opts:['Уголь','Песок','Глина','Соль'],ans:0,why:'Каменный уголь образовался из остатков древних растений.'},
+    {q:'Какое горючее полезное ископаемое лёгкое и коричневое?',opts:['Торф','Нефть','Гранит','Песок'],ans:0,why:'Торф — лёгкое коричневое горючее ископаемое.'},
+    {q:'Как называют места, где добывают полезные ископаемые открытым способом?',opts:['Карьеры','Шахты','Скважины','Фермы'],ans:0,why:'Карьер — открытый способ добычи полезных ископаемых.'},
+    {q:'Какое полезное ископаемое нужно для удобрения почвы?',opts:['Торф','Песок','Гранит','Нефть'],ans:0,why:'Торф используют как удобрение.'},
+    {q:'Из чего делают асфальт для дорог?',opts:['Из нефти','Из песка','Из глины','Из угля'],ans:0,why:'Асфальт делают из продуктов переработки нефти.'},
+    {q:'Какое полезное ископаемое — природный газ, который горит?',opts:['Природный газ','Гранит','Песок','Глина'],ans:0,why:'Природный газ — горючее полезное ископаемое.'},
+    {q:'Что добывают в карьерах для строительства домов?',opts:['Песок и глину','Нефть и газ','Уголь','Железную руду'],ans:0,why:'Песок и глину добывают в карьерах для строительства.'},
+    {q:'Какое полезное ископаемое — соль?',opts:['Поваренная соль','Нефть','Уголь','Торф'],ans:0,why:'Поваренную соль добывают и используют в пищу.'},
+    {q:'Из какого полезного ископаемого делают провода?',opts:['Из медной руды','Из глины','Из песка','Из торфа'],ans:0,why:'Медь получают из медной руды, из неё делают провода.'},
+    {q:'Что образуется из остатков морских организмов?',opts:['Известняк','Торф','Нефть','Уголь'],ans:0,why:'Известняк образовался из остатков морских организмов.'},
+    {q:'Какое полезное ископаемое используют для отопления?',opts:['Природный газ','Песок','Глина','Гранит'],ans:0,why:'Природный газ используют для отопления домов.'},
+    {q:'Из чего делают чугун и сталь?',opts:['Из железной руды','Из глины','Из торфа','Из нефти'],ans:0,why:'Чугун и сталь выплавляют из железной руды.'},
+    {q:'Какое полезное ископаемое добывают в море на платформах?',opts:['Нефть','Песок','Глину','Гранит'],ans:0,why:'Нефть добывают и в море на специальных платформах.'},
+    {q:'Как называют специалиста, который ищет полезные ископаемые?',opts:['Геолог','Агроном','Врач','Повар'],ans:0,why:'Геолог ищет и изучает полезные ископаемые.'}
+  ]},
+  { id:'organizm', icon:'🧍', title:'Организм и здоровье', desc:'Органы человека, гигиена, режим дня', questions:[
+    {q:'Какой орган управляет работой всего тела?',opts:['Головной мозг','Сердце','Желудок','Лёгкие'],ans:0,why:'Головной мозг управляет всеми органами и движениями.'},
+    {q:'Какой орган качает кровь по телу?',opts:['Сердце','Мозг','Печень','Лёгкие'],ans:0,why:'Сердце — орган, который перекачивает кровь.'},
+    {q:'Чем человек дышит?',opts:['Лёгкими','Желудком','Сердцем','Почками'],ans:0,why:'Лёгкие — органы дыхания.'},
+    {q:'Где переваривается пища?',opts:['В желудке','В лёгких','В сердце','В мозге'],ans:0,why:'В желудке пища переваривается с помощью желудочного сока.'},
+    {q:'Какой орган чувств помогает видеть?',opts:['Глаза','Уши','Нос','Язык'],ans:0,why:'Глаза — орган зрения.'},
+    {q:'Какой орган чувств помогает слышать?',opts:['Уши','Глаза','Нос','Кожа'],ans:0,why:'Уши — орган слуха.'},
+    {q:'Какой орган чувств помогает чувствовать запахи?',opts:['Нос','Язык','Глаза','Уши'],ans:0,why:'Нос — орган обоняния.'},
+    {q:'Какой орган чувств помогает чувствовать вкус?',opts:['Язык','Нос','Уши','Глаза'],ans:0,why:'Язык — орган вкуса.'},
+    {q:'Какой орган защищает тело и чувствует прикосновения?',opts:['Кожа','Сердце','Лёгкие','Желудок'],ans:0,why:'Кожа — орган осязания и защита организма.'},
+    {q:'Что является опорой тела человека?',opts:['Скелет','Кожа','Мышцы','Сердце'],ans:0,why:'Скелет — опора тела, состоит из костей.'},
+    {q:'Сколько раз в день нужно чистить зубы?',opts:['Два раза','Один раз в неделю','Один раз в день','Пять раз'],ans:0,why:'Зубы чистят два раза в день — утром и вечером.'},
+    {q:'Что нужно мыть перед едой?',opts:['Руки','Волосы','Обувь','Одежду'],ans:0,why:'Перед едой обязательно моют руки с мылом.'},
+    {q:'В каких продуктах больше всего витаминов?',opts:['В овощах и фруктах','В конфетах','В чипсах','В газировке'],ans:0,why:'Витамины содержатся в овощах и фруктах.'},
+    {q:'Что нужно делать по утрам, чтобы быть бодрым?',opts:['Зарядку','Смотреть телевизор','Играть в компьютер','Спать до обеда'],ans:0,why:'Утренняя зарядка помогает проснуться и быть бодрым.'},
+    {q:'Сколько должен спать школьник?',opts:['Не меньше 9–10 часов','2 часа','1 час','Не спать совсем'],ans:0,why:'Школьнику нужно спать около 9–10 часов.'},
+    {q:'Что полезно для зрения?',opts:['Читать при хорошем свете','Читать лёжа','Смотреть в телефон в темноте','Тереть глаза'],ans:0,why:'Читать нужно при хорошем освещении, это бережёт зрение.'},
+    {q:'Что защищает организм от болезней?',opts:['Иммунитет','Конфеты','Мультфильмы','Сладости'],ans:0,why:'Иммунитет — защитные силы организма.'},
+    {q:'К какому врачу идти, если болит зуб?',opts:['К стоматологу','К окулисту','К хирургу','К педиатру'],ans:0,why:'Зубы лечит врач-стоматолог.'},
+    {q:'Что нужно делать, чтобы не заболеть гриппом?',opts:['Мыть руки и делать прививки','Есть снег','Ходить без шапки в мороз','Не спать'],ans:0,why:'Мытьё рук и прививки помогают не заболеть.'},
+    {q:'Какой орган перерабатывает вредные вещества (фильтрует кровь)?',opts:['Печень','Сердце','Мозг','Кожа'],ans:0,why:'Печень очищает кровь от вредных веществ.'},
+    {q:'Что выводит из организма лишнюю воду и вредные вещества?',opts:['Почки','Лёгкие','Сердце','Мозг'],ans:0,why:'Почки выводят из организма лишнюю воду и вредные вещества.'},
+    {q:'Что нужно делать после прогулки и перед едой?',opts:['Мыть руки','Бежать спать','Смотреть телевизор','Играть'],ans:0,why:'После прогулки и перед едой моют руки.'},
+    {q:'Какая еда самая полезная?',opts:['Каша, овощи, фрукты','Чипсы','Газировка','Пирожные'],ans:0,why:'Полезная еда — каши, овощи, фрукты, молочные продукты.'},
+    {q:'Что вредно для зубов?',opts:['Много сладкого','Овощи','Молоко','Творог'],ans:0,why:'Сладкое портит зубы, если есть его много.'},
+    {q:'Как правильно сидеть за партой?',opts:['Прямо, не горбясь','Согнувшись','Развалившись','Лёжа'],ans:0,why:'Сидеть нужно прямо, чтобы не испортить осанку.'},
+    {q:'Что делать, если заболел?',opts:['Обратиться к врачу','Самому лечиться','Играть на улице','Идти в школу'],ans:0,why:'При болезни нужно обратиться к врачу.'},
+    {q:'Что полезно делать на перемене?',opts:['Двигаться, гулять','Сидеть неподвижно','Смотреть в телефон','Драться'],ans:0,why:'На перемене полезно подвигаться и отдохнуть.'},
+    {q:'Зачем нужен режим дня?',opts:['Чтобы всё успевать и быть здоровым','Чтобы скучать','Чтобы не спать','Чтобы больше болеть'],ans:0,why:'Режим дня помогает быть здоровым и всё успевать.'},
+    {q:'Что нужно есть на завтрак?',opts:['Кашу или творог','Чипсы','Конфеты','Газировку'],ans:0,why:'Завтрак должен быть полезным: каша, творог, фрукты.'},
+    {q:'Какой орган отвечает за переваривание и всасывание пищи (длинная трубка)?',opts:['Кишечник','Сердце','Лёгкие','Мозг'],ans:0,why:'В кишечнике пища окончательно переваривается и всасывается.'},
+    {q:'Что нужно делать перед сном?',opts:['Почистить зубы и умыться','Поесть сладкого','Побегать','Поиграть в шумные игры'],ans:0,why:'Перед сном чистят зубы и умываются.'},
+    {q:'Зачем нужны прививки?',opts:['Чтобы защитить от болезней','Чтобы было больно','Чтобы не ходить в школу','Чтобы вырасти'],ans:0,why:'Прививки защищают организм от опасных болезней.'},
+    {q:'Что вредно для осанки?',opts:['Носить тяжёлый рюкзак на одном плече','Заниматься физкультурой','Плавать','Сидеть прямо'],ans:0,why:'Тяжёлый рюкзак на одном плече портит осанку.'},
+    {q:'Что укрепляет здоровье?',opts:['Спорт и закаливание','Лень','Сладости','Недосыпание'],ans:0,why:'Спорт и закаливание укрепляют здоровье.'}
+  ]},
+  { id:'bezopasnost', icon:'🚦', title:'Безопасность', desc:'Правила дорожного движения, огонь, вода, газ', questions:[
+    {q:'На какой свет светофора можно переходить дорогу?',opts:['На зелёный','На красный','На жёлтый','На любой'],ans:0,why:'Дорогу переходят только на зелёный свет.'},
+    {q:'Что означает красный свет светофора?',opts:['Стой','Иди','Беги','Приготовься'],ans:0,why:'Красный свет запрещает движение — нужно стоять.'},
+    {q:'Где нужно переходить дорогу?',opts:['По пешеходному переходу','Где хочется','Между машинами','По газону'],ans:0,why:'Дорогу переходят по пешеходному переходу.'},
+    {q:'Какой номер телефона у пожарной службы?',opts:['101','102','103','104'],ans:0,why:'Пожарных вызывают по номеру 101.'},
+    {q:'Какой номер телефона у скорой помощи?',opts:['103','101','102','104'],ans:0,why:'Скорую помощь вызывают по номеру 103.'},
+    {q:'Какой номер телефона у полиции?',opts:['102','101','103','104'],ans:0,why:'Полицию вызывают по номеру 102.'},
+    {q:'Какой номер телефона у газовой службы?',opts:['104','101','102','103'],ans:0,why:'Газовую службу вызывают по номеру 104.'},
+    {q:'Единый номер службы спасения?',opts:['112','111','113','114'],ans:0,why:'112 — единый номер экстренных служб.'},
+    {q:'Что делать, если начался пожар?',opts:['Позвонить 101 и покинуть помещение','Спрятаться под кровать','Открыть все окна','Продолжать играть'],ans:0,why:'При пожаре звони 101 и выходи из помещения.'},
+    {q:'Можно ли играть со спичками?',opts:['Нет, это опасно','Да, сколько угодно','Да, если аккуратно','Только дома'],ans:0,why:'Играть со спичками нельзя — это может вызвать пожар.'},
+    {q:'Можно ли трогать электроприборы мокрыми руками?',opts:['Нельзя','Можно','Можно, если быстро','Только телевизор'],ans:0,why:'Мокрыми руками трогать электроприборы опасно для жизни.'},
+    {q:'Что делать, если почувствовал запах газа?',opts:['Открыть окна и позвать взрослых','Включить свет','Зажечь спичку','Ничего не делать'],ans:0,why:'При запахе газа открывают окна, не включают свет и зовут взрослых.'},
+    {q:'Можно ли купаться без взрослых?',opts:['Нельзя','Можно','Можно, если мелко','Можно в реке'],ans:0,why:'Купаться можно только под присмотром взрослых.'},
+    {q:'Где можно кататься на велосипеде детям?',opts:['Во дворе и на специальных площадках','По проезжей части','По тротуару с машинами','Где угодно'],ans:0,why:'Детям кататься на велосипеде можно во дворе и на площадках.'},
+    {q:'Можно ли перебегать дорогу перед близко идущей машиной?',opts:['Нельзя','Можно','Можно, если быстро','Только с другом'],ans:0,why:'Перебегать дорогу перед машиной очень опасно.'},
+    {q:'Что нужно делать, садясь в машину?',opts:['Пристегнуться ремнём','Встать на сиденье','Открыть окно','Ничего'],ans:0,why:'В машине нужно обязательно пристегнуться ремнём безопасности.'},
+    {q:'Можно ли брать в руки незнакомые предметы и лекарства?',opts:['Нельзя','Можно','Можно, если интересно','Только таблетки'],ans:0,why:'Незнакомые предметы и лекарства трогать опасно.'},
+    {q:'Что делать, если незнакомый человек зовёт с собой?',opts:['Не ходить и позвать взрослых','Пойти с ним','Сесть в машину','Взять конфету'],ans:0,why:'С незнакомыми людьми никуда ходить нельзя.'},
+    {q:'Можно ли ходить по льду водоёма без взрослых?',opts:['Нельзя, лёд может проломиться','Можно','Можно, если толстый','Только зимой'],ans:0,why:'Лёд может быть тонким и проломиться — это опасно.'},
+    {q:'Что нужно сделать, если поранился?',opts:['Обработать рану и позвать взрослых','Играть дальше','Засыпать землёй','Ничего'],ans:0,why:'Рану нужно обработать и обратиться к взрослым.'},
+    {q:'Можно ли трогать оголённые провода?',opts:['Нельзя, убьёт током','Можно','Можно, если сухие','Только летом'],ans:0,why:'Оголённые провода опасны — может ударить током.'},
+    {q:'Куда звонить, если увидел пожар?',opts:['101','102','103','104'],ans:0,why:'О пожаре сообщают по номеру 101.'},
+    {q:'Что обязательно нужно надевать при езде на велосипеде?',opts:['Шлем','Очки','Перчатки','Кепку'],ans:0,why:'Шлем защищает голову при падении.'},
+    {q:'Можно ли высовываться из окна машины или автобуса?',opts:['Нельзя','Можно','Можно, если не быстро','Только голову'],ans:0,why:'Высовываться из окна транспорта опасно.'},
+    {q:'Где безопасно гулять детям?',opts:['На детской площадке','На проезжей части','На стройке','У железной дороги'],ans:0,why:'Гулять безопасно на детской площадке и во дворе.'}
+  ]},
+  { id:'strany', icon:'🗺️', title:'Путешествия и страны', desc:'Города, страны, материки, океаны', questions:[
+    {q:'Столица России?',opts:['Москва','Санкт-Петербург','Казань','Сочи'],ans:0,why:'Москва — столица России.'},
+    {q:'Какой город основал Пётр Первый?',opts:['Санкт-Петербург','Москва','Владимир','Новгород'],ans:0,why:'Санкт-Петербург основал Пётр Первый в 1703 году.'},
+    {q:'Самый большой материк Земли?',opts:['Евразия','Африка','Австралия','Антарктида'],ans:0,why:'Евразия — самый большой материк.'},
+    {q:'Самый жаркий материк?',opts:['Африка','Антарктида','Евразия','Австралия'],ans:0,why:'Африка — самый жаркий материк.'},
+    {q:'Самый холодный материк?',opts:['Антарктида','Африка','Австралия','Евразия'],ans:0,why:'Антарктида — самый холодный материк, покрыт льдом.'},
+    {q:'Самый маленький материк?',opts:['Австралия','Евразия','Африка','Северная Америка'],ans:0,why:'Австралия — самый маленький материк.'},
+    {q:'Самый большой океан?',opts:['Тихий','Атлантический','Индийский','Северный Ледовитый'],ans:0,why:'Тихий океан — самый большой и глубокий.'},
+    {q:'Самый холодный океан?',opts:['Северный Ледовитый','Тихий','Атлантический','Индийский'],ans:0,why:'Северный Ледовитый океан — самый холодный.'},
+    {q:'Сколько материков на Земле?',opts:['Шесть','Три','Десять','Два'],ans:0,why:'На Земле шесть материков.'},
+    {q:'Сколько океанов на Земле?',opts:['Четыре','Пять','Шесть','Два'],ans:0,why:'На Земле четыре океана.'},
+    {q:'Столица Франции?',opts:['Париж','Лондон','Рим','Берлин'],ans:0,why:'Париж — столица Франции.'},
+    {q:'Столица Великобритании?',opts:['Лондон','Париж','Рим','Мадрид'],ans:0,why:'Лондон — столица Великобритании.'},
+    {q:'Столица Италии?',opts:['Рим','Париж','Лондон','Берлин'],ans:0,why:'Рим — столица Италии.'},
+    {q:'Столица Германии?',opts:['Берлин','Париж','Рим','Лондон'],ans:0,why:'Берлин — столица Германии.'},
+    {q:'В какой стране находится Эйфелева башня?',opts:['Во Франции','В Италии','В Германии','В Великобритании'],ans:0,why:'Эйфелева башня находится в Париже, во Франции.'},
+    {q:'В какой стране находится Колизей?',opts:['В Италии','Во Франции','В Греции','В Египте'],ans:0,why:'Колизей — древний амфитеатр в Риме, Италия.'},
+    {q:'В какой стране находятся пирамиды?',opts:['В Египте','В Греции','В Италии','Во Франции'],ans:0,why:'Пирамиды находятся в Египте.'},
+    {q:'Родина Олимпийских игр?',opts:['Греция','Италия','Франция','Россия'],ans:0,why:'Олимпийские игры родились в Древней Греции.'},
+    {q:'Какая страна — северный сосед России, страна озёр?',opts:['Финляндия','Китай','Франция','Италия'],ans:0,why:'Финляндия — северный сосед России, страна озёр.'},
+    {q:'В какой стране изобрели бумагу и порох?',opts:['В Китае','В России','Во Франции','В Италии'],ans:0,why:'Бумагу и порох изобрели в Китае.'},
+    {q:'Какая страна — самая большая по площади в мире?',opts:['Россия','Китай','США','Франция'],ans:0,why:'Россия — самая большая страна мира.'},
+    {q:'Какая страна знаменита фьордами?',opts:['Норвегия','Греция','Египет','Китай'],ans:0,why:'Норвегия знаменита узкими морскими заливами — фьордами.'},
+    {q:'Столица Древней Руси?',opts:['Киев','Москва','Новгород','Владимир'],ans:0,why:'Киев был столицей Древней Руси.'},
+    {q:'Какие города входят в Золотое кольцо России?',opts:['Ярославль, Суздаль, Владимир','Париж, Лондон','Сочи, Казань','Киев, Минск'],ans:0,why:'Золотое кольцо — древние города: Ярославль, Суздаль, Владимир и другие.'},
+    {q:'Самое глубокое озеро мира?',opts:['Байкал','Ладожское','Онежское','Каспийское море'],ans:0,why:'Байкал — самое глубокое озеро мира.'},
+    {q:'Самая длинная река Европы?',opts:['Волга','Дунай','Днепр','Нева'],ans:0,why:'Волга — самая длинная река Европы.'},
+    {q:'Какие горы разделяют Европу и Азию?',opts:['Уральские','Кавказские','Альпы','Гималаи'],ans:0,why:'Уральские горы разделяют Европу и Азию.'},
+    {q:'На каком материке находится Россия?',opts:['В Евразии','В Африке','В Австралии','В Антарктиде'],ans:0,why:'Россия находится на материке Евразия.'},
+    {q:'Воображаемая линия, делящая Землю пополам?',opts:['Экватор','Горизонт','Меридиан','Параллель'],ans:0,why:'Экватор делит Землю на два полушария.'},
+    {q:'Какой прибор показывает стороны горизонта?',opts:['Компас','Термометр','Барометр','Часы'],ans:0,why:'Компас показывает стороны горизонта.'},
+    {q:'Уменьшенная модель Земли?',opts:['Глобус','Карта','Атлас','План'],ans:0,why:'Глобус — уменьшенная объёмная модель Земли.'},
+    {q:'В какой стране живут кенгуру?',opts:['В Австралии','В Африке','В России','В Китае'],ans:0,why:'Кенгуру — животное Австралии.'},
+    {q:'В какой стране живут пингвины?',opts:['В Антарктиде','В Африке','В Австралии','В России'],ans:0,why:'Пингвины живут в Антарктиде и холодных морях.'},
+    {q:'Какой океан омывает Россию с севера?',opts:['Северный Ледовитый','Тихий','Индийский','Атлантический'],ans:0,why:'Север России омывает Северный Ледовитый океан.'},
+    {q:'Какой океан омывает Россию с востока?',opts:['Тихий','Атлантический','Индийский','Северный Ледовитый'],ans:0,why:'Восток России омывает Тихий океан.'}
+  ]},
+  { id:'istoriya', icon:'🏛️', title:'История России', desc:'События и личности от Древней Руси до наших дней', questions:[
+    {q:'Как назывались предки русского народа?',opts:['Славяне','Викинги','Рыцари','Фараоны'],ans:0,why:'Славяне — предки русского, украинского и белорусского народов.'},
+    {q:'Как называлось государство восточных славян?',opts:['Древняя Русь','Российская империя','СССР','Московия'],ans:0,why:'Древняя Русь — государство восточных славян.'},
+    {q:'Какой город был столицей Древней Руси?',opts:['Киев','Москва','Петербург','Новгород'],ans:0,why:'Киев был столицей Древней Руси.'},
+    {q:'Какой князь крестил Русь?',opts:['Владимир','Ярослав','Рюрик','Иван Грозный'],ans:0,why:'Князь Владимир крестил Русь в 988 году.'},
+    {q:'В каком году произошло Крещение Руси?',opts:['988','1380','1812','1961'],ans:0,why:'Крещение Руси произошло в 988 году.'},
+    {q:'Какой князь создал свод законов и прославился мудростью?',opts:['Ярослав Мудрый','Иван Грозный','Пётр Первый','Дмитрий Донской'],ans:0,why:'Ярослав Мудрый — князь, при котором Русь достигла расцвета.'},
+    {q:'На чём писали в Древней Руси?',opts:['На бересте','На бумаге','На папирусе','На глине'],ans:0,why:'В Древней Руси писали на берёзовой коре — бересте.'},
+    {q:'Как называется запись событий по годам?',opts:['Летопись','Сказка','Былина','Песня'],ans:0,why:'Летопись — запись исторических событий по годам.'},
+    {q:'Кто написал «Повесть временных лет»?',opts:['Монах Нестор','Князь Владимир','Иван Фёдоров','Ломоносов'],ans:0,why:'«Повесть временных лет» написал монах Нестор.'},
+    {q:'Какой князь победил шведов в Невской битве?',opts:['Александр Невский','Дмитрий Донской','Иван Третий','Пётр Первый'],ans:0,why:'Александр Невский победил шведов на реке Неве.'},
+    {q:'Как называется битва на льду Чудского озера?',opts:['Ледовое побоище','Куликовская битва','Бородино','Полтава'],ans:0,why:'Ледовое побоище — битва на льду Чудского озера в 1242 году.'},
+    {q:'Какой князь победил в Куликовской битве?',opts:['Дмитрий Донской','Александр Невский','Иван Грозный','Владимир'],ans:0,why:'Дмитрий Донской победил Мамая в Куликовской битве.'},
+    {q:'В каком году была Куликовская битва?',opts:['1380','988','1703','1945'],ans:0,why:'Куликовская битва произошла в 1380 году.'},
+    {q:'При каком князе Русь освободилась от ордынского ига?',opts:['При Иване Третьем','При Владимире','При Рюрике','При Петре'],ans:0,why:'Иван III завершил освобождение Руси от ордынского ига.'},
+    {q:'Кто был первым русским царём?',opts:['Иван Грозный','Пётр Первый','Иван Третий','Николай Второй'],ans:0,why:'Иван Грозный — первый царь всея Руси.'},
+    {q:'Кто напечатал первую русскую книгу?',opts:['Иван Фёдоров','Нестор','Ломоносов','Пушкин'],ans:0,why:'Иван Фёдоров — первый русский книгопечатник.'},
+    {q:'Какой царь основал Санкт-Петербург?',opts:['Пётр Первый','Иван Грозный','Николай Второй','Александр Невский'],ans:0,why:'Пётр Первый основал Санкт-Петербург в 1703 году.'},
+    {q:'Что значит «прорубил окно в Европу»?',opts:['Открыл выход к морю и связь с Европой','Построил окно','Уехал в Европу','Разбил стекло'],ans:0,why:'Пётр Первый открыл России выход к Балтийскому морю и связь с Европой.'},
+    {q:'Кто был великим русским учёным-энциклопедистом?',opts:['Михаил Ломоносов','Пётр Первый','Иван Фёдоров','Гагарин'],ans:0,why:'Ломоносов — великий русский учёный.'},
+    {q:'При какой императрице построили Зимний дворец (Эрмитаж)?',opts:['При Екатерине Второй','При Петре','При Иване Грозном','При Николае'],ans:0,why:'Зимний дворец построили при Екатерине II.'},
+    {q:'С кем Россия воевала в 1812 году?',opts:['С Наполеоном','С турками','С немцами','С монголами'],ans:0,why:'В 1812 году Россия воевала с армией Наполеона.'},
+    {q:'Кто командовал русской армией в войне 1812 года?',opts:['Михаил Кутузов','Александр Невский','Жуков','Пётр Первый'],ans:0,why:'Кутузов — главнокомандующий русской армией в 1812 году.'},
+    {q:'Как называется главное сражение войны 1812 года?',opts:['Бородинское сражение','Ледовое побоище','Куликовская битва','Полтава'],ans:0,why:'Бородинское сражение — крупнейшая битва войны 1812 года.'},
+    {q:'Кто был последним российским императором?',opts:['Николай Второй','Пётр Первый','Иван Грозный','Александр Первый'],ans:0,why:'Николай II — последний император России.'},
+    {q:'В какие годы шла Великая Отечественная война?',opts:['1941–1945','1812–1814','1914–1918','1939–1940'],ans:0,why:'Великая Отечественная война шла с 1941 по 1945 год.'},
+    {q:'С кем воевал советский народ в Великой Отечественной войне?',opts:['С фашистами','С Наполеоном','С турками','С монголами'],ans:0,why:'Советский народ воевал с фашистскими захватчиками.'},
+    {q:'Когда отмечают День Победы?',opts:['9 мая','1 сентября','12 апреля','23 февраля'],ans:0,why:'День Победы отмечают 9 мая.'},
+    {q:'Какой полководец командовал в Великой Отечественной войне?',opts:['Георгий Жуков','Кутузов','Невский','Донской'],ans:0,why:'Георгий Жуков — маршал, полководец Великой Отечественной войны.'},
+    {q:'Кто первым полетел в космос?',opts:['Юрий Гагарин','Нил Армстронг','Ломоносов','Пётр Первый'],ans:0,why:'Юрий Гагарин первым полетел в космос 12 апреля 1961 года.'},
+    {q:'Когда отмечают День космонавтики?',opts:['12 апреля','9 мая','1 сентября','31 декабря'],ans:0,why:'12 апреля — День космонавтики, в честь полёта Гагарина.'},
+    {q:'Как назывался корабль Гагарина?',opts:['«Восток»','«Союз»','«Мир»','«Ракета»'],ans:0,why:'Гагарин полетел на корабле «Восток».'},
+    {q:'Что относится к символам государства?',opts:['Герб, флаг, гимн','Школа, парк','Река, гора','Машина, дом'],ans:0,why:'Герб, флаг и гимн — символы государства.'},
+    {q:'Как называется основной закон страны?',opts:['Конституция','Летопись','Сказка','Учебник'],ans:0,why:'Конституция — основной закон государства.'},
+    {q:'Кто такие богатыри?',opts:['Защитники Руси','Купцы','Крестьяне','Писатели'],ans:0,why:'Богатыри — былинные защитники Русской земли.'},
+    {q:'Кто создал первую русскую азбуку (кириллицу)?',opts:['Кирилл и Мефодий','Пётр Первый','Ломоносов','Пушкин'],ans:0,why:'Славянскую азбуку создали братья Кирилл и Мефодий.'},
+    {q:'Как звали первого князя, призванного на Русь?',opts:['Рюрик','Владимир','Ярослав','Олег'],ans:0,why:'По летописи, первым князем был призван Рюрик.'},
+    {q:'Что строили в Древней Руси из дерева?',opts:['Дома, крепости, храмы','Небоскрёбы','Заводы','Мосты из бетона'],ans:0,why:'В Древней Руси строили из дерева — леса было много.'},
+    {q:'Какой город называют «северной столицей» России?',opts:['Санкт-Петербург','Москва','Киев','Владимир'],ans:0,why:'Санкт-Петербург называют северной столицей.'},
+    {q:'Что делали в древних русских городах на вече?',opts:['Обсуждали важные дела','Играли в мяч','Торговали сладостями','Пели песни'],ans:0,why:'Вече — народное собрание, где обсуждали важные дела.'},
+    {q:'Какой праздник отмечают 1 сентября?',opts:['День знаний','День Победы','Новый год','День космонавтики'],ans:0,why:'1 сентября — День знаний, начало учебного года.'},
+    {q:'Кто защищал русскую землю в былинах?',opts:['Богатыри','Рыцари','Солдаты','Космонавты'],ans:0,why:'Богатыри — герои русских былин, защитники земли.'},
+    {q:'Что такое усадьба в старину?',opts:['Дом помещика с хозяйством','Школа','Рынок','Церковь'],ans:0,why:'Усадьба — дом помещика с хозяйственными постройками.'},
+    {q:'Какой город стал столицей России после Древней Руси?',opts:['Москва','Киев','Новгород','Петербург'],ans:0,why:'Москва стала столицей Русского государства.'}
+  ]},
+  { id:'vsemirnaya', icon:'🌍', title:'Всемирная история', desc:'Древний мир, средние века, новое время', questions:[
+    {q:'Как называется период древнейшей истории человечества?',opts:['Первобытная история','Средние века','Новое время','Новейшее время'],ans:0,why:'Первобытная история — древнейший период, когда люди жили в пещерах.'},
+    {q:'Где жили первобытные люди?',opts:['В пещерах','В замках','В домах из кирпича','Во дворцах'],ans:0,why:'Первобытные люди жили в пещерах.'},
+    {q:'На кого охотились первобытные люди?',opts:['На мамонтов','На коров','На кошек','На кур'],ans:0,why:'Первобытные люди охотились на мамонтов и других зверей.'},
+    {q:'Какая древняя страна находилась на берегах реки Нил?',opts:['Египет','Греция','Рим','Китай'],ans:0,why:'Древний Египет находился на берегах реки Нил.'},
+    {q:'Что строили в Древнем Египте?',opts:['Пирамиды','Замки','Небоскрёбы','Кремль'],ans:0,why:'В Египте строили пирамиды — гробницы фараонов.'},
+    {q:'Кто правил в Древнем Египте?',opts:['Фараон','Царь','Император','Князь'],ans:0,why:'Правителем Древнего Египта был фараон.'},
+    {q:'Какая древняя страна — родина Олимпийских игр?',opts:['Греция','Египет','Рим','Китай'],ans:0,why:'Олимпийские игры родились в Древней Греции.'},
+    {q:'Какой город был столицей огромной древней империи?',opts:['Рим','Киев','Париж','Москва'],ans:0,why:'Рим был столицей Римской империи.'},
+    {q:'Как называется древний амфитеатр в Риме?',opts:['Колизей','Пирамида','Кремль','Эйфелева башня'],ans:0,why:'Колизей — древний амфитеатр в Риме.'},
+    {q:'Как называется эпоха рыцарей и замков?',opts:['Средние века','Первобытность','Новое время','Новейшее время'],ans:0,why:'Средние века — время рыцарей, замков и городов.'},
+    {q:'Кто такие рыцари?',opts:['Конные воины в доспехах','Купцы','Крестьяне','Моряки'],ans:0,why:'Рыцари — конные воины в доспехах.'},
+    {q:'Где жил рыцарь?',opts:['В замке','В пещере','В избе','В шалаше'],ans:0,why:'Рыцарь жил в замке — укреплённом жилище.'},
+    {q:'Какая эпоха началась с открытия Америки?',opts:['Новое время','Средние века','Первобытность','Древний мир'],ans:0,why:'Новое время началось с Великих географических открытий.'},
+    {q:'Кто открыл Америку?',opts:['Христофор Колумб','Магеллан','Кук','Гагарин'],ans:0,why:'Христофор Колумб открыл Америку в 1492 году.'},
+    {q:'Кто совершил первое кругосветное путешествие?',opts:['Фернан Магеллан','Колумб','Васко да Гама','Ньютон'],ans:0,why:'Экспедиция Магеллана первой обогнула Землю.'},
+    {q:'Что изобрели в Китае?',opts:['Бумагу и порох','Паровоз','Самолёт','Телефон'],ans:0,why:'Бумагу и порох изобрели в Китае.'},
+    {q:'Какой древний город известен висячими садами?',opts:['Вавилон','Рим','Киев','Москва'],ans:0,why:'Висячие сады были в древнем Вавилоне.'},
+    {q:'Что строили в Древнем Риме для зрелищ?',opts:['Амфитеатры','Пирамиды','Замки','Храмы на колёсах'],ans:0,why:'В Риме строили амфитеатры, например Колизей.'},
+    {q:'Как называется эпоха, в которой мы живём?',opts:['Новейшее время','Средние века','Первобытность','Древний мир'],ans:0,why:'Мы живём в Новейшее время.'},
+    {q:'Что появилось раньше?',opts:['Каменные орудия','Автомобиль','Компьютер','Телефон'],ans:0,why:'Каменные орудия — самые древние из перечисленного.'},
+    {q:'Как называли правителей в Древнем Риме?',opts:['Императоры','Фараоны','Цари','Князья'],ans:0,why:'Правителей Древнего Рима называли императорами.'},
+    {q:'Что такое иероглифы?',opts:['Древние египетские знаки-рисунки','Буквы','Цифры','Ноты'],ans:0,why:'Иероглифы — знаки-рисунки древнеегипетского письма.'},
+    {q:'Чем писали в Древнем Египте?',opts:['На папирусе','На бумаге','На бересте','На доске'],ans:0,why:'В Египте писали на папирусе, сделанном из тростника.'},
+    {q:'Что придумали в Древней Греции?',opts:['Театр и Олимпийские игры','Компьютер','Автомобиль','Телефон'],ans:0,why:'В Древней Греции появились театр и Олимпийские игры.'},
+    {q:'Как называется наука о прошлом человечества?',opts:['История','География','Биология','Математика'],ans:0,why:'История — наука о прошлом человечества.'}
+  ]},
+  { id:'match', icon:'🧩', title:'Сопоставь', desc:'Соедини пару: клик слева, потом справа', questions:[
+    { type:'match', pairs:[{a:'Россия',b:'Москва'},{a:'Франция',b:'Париж'},{a:'Италия',b:'Рим'},{a:'Великобритания',b:'Лондон'},{a:'Германия',b:'Берлин'}] },
+    { type:'match', pairs:[{a:'Крещение Руси',b:'988 год'},{a:'Куликовская битва',b:'1380 год'},{a:'Основание Петербурга',b:'1703 год'},{a:'Полёт Гагарина',b:'1961 год'},{a:'Победа в ВОВ',b:'1945 год'}] },
+    { type:'match', pairs:[{a:'Арктические пустыни',b:'белый медведь'},{a:'Тундра',b:'северный олень'},{a:'Лес',b:'бурый медведь'},{a:'Степь',b:'суслик'},{a:'Пустыня',b:'верблюд'}] },
+    { type:'match', pairs:[{a:'Нефть',b:'бензин'},{a:'Песок',b:'стекло'},{a:'Глина',b:'кирпич'},{a:'Железная руда',b:'сталь'},{a:'Известняк',b:'мел'}] },
+    { type:'match', pairs:[{a:'Сердце',b:'качает кровь'},{a:'Лёгкие',b:'дыхание'},{a:'Глаза',b:'зрение'},{a:'Уши',b:'слух'},{a:'Желудок',b:'переваривание'}] },
+    { type:'match', pairs:[{a:'Евразия',b:'самый большой'},{a:'Африка',b:'самый жаркий'},{a:'Антарктида',b:'самый холодный'},{a:'Австралия',b:'самый маленький'}] },
+    { type:'match', pairs:[{a:'Китай',b:'бумага и порох'},{a:'Греция',b:'Олимпийские игры'},{a:'Египет',b:'пирамиды'},{a:'Норвегия',b:'фьорды'},{a:'Финляндия',b:'страна озёр'}] },
+    { type:'match', pairs:[{a:'Пётр Первый',b:'основал Петербург'},{a:'Юрий Гагарин',b:'первый космонавт'},{a:'Михаил Кутузов',b:'война 1812 года'},{a:'Георгий Жуков',b:'Великая Отечественная война'},{a:'Александр Невский',b:'Ледовое побоище'}] },
+    { type:'match', pairs:[{a:'Горизонт',b:'линия неба и земли'},{a:'Компас',b:'прибор для сторон горизонта'},{a:'Глобус',b:'модель Земли'},{a:'Карта',b:'изображение местности'},{a:'Экватор',b:'делит Землю пополам'}] },
+    { type:'match', pairs:[{a:'Млекопитающие',b:'кормят молоком'},{a:'Птицы',b:'перья'},{a:'Рыбы',b:'жабры'},{a:'Насекомые',b:'шесть ног'},{a:'Земноводные',b:'вода и суша'}] }
+  ]},
+  { id:'text', icon:'📖', title:'Работа с текстом', desc:'Прочитай текст и ответь на вопросы', block:true, questions:[
+    {p:TEXT_A,q:'Какое вещество — самое распространённое на Земле?',opts:['Вода','Песок','Нефть','Глина'],ans:0,why:'В тексте сказано: «Вода — самое распространённое вещество на Земле».'},
+    {p:TEXT_A,q:'Сколько состояний у воды?',opts:['Три','Два','Четыре','Пять'],ans:0,why:'В тексте: вода бывает в трёх состояниях.'},
+    {p:TEXT_A,q:'Какое состояние воды твёрдое?',opts:['Лёд','Пар','Туман','Роса'],ans:0,why:'Твёрдое состояние воды — лёд.'},
+    {p:TEXT_A,q:'Какое состояние воды газообразное?',opts:['Пар','Лёд','Снег','Град'],ans:0,why:'Газообразное состояние воды — пар.'},
+    {p:TEXT_A,q:'Кому необходима вода?',opts:['Всем живым организмам','Только людям','Только рыбам','Только растениям'],ans:0,why:'Вода необходима всем живым организмам.'},
+    {p:TEXT_B,q:'Кто кормит детёнышей молоком?',opts:['Млекопитающие','Птицы','Рыбы','Насекомые'],ans:0,why:'Млекопитающие кормят детёнышей молоком.'},
+    {p:TEXT_B,q:'Чем покрыто тело птиц?',opts:['Перьями','Чешуёй','Шерстью','Панцирем'],ans:0,why:'Птицы покрыты перьями.'},
+    {p:TEXT_B,q:'Чем дышат рыбы?',opts:['Жабрами','Лёгкими','Кожей','Носом'],ans:0,why:'Рыбы дышат жабрами.'},
+    {p:TEXT_B,q:'Сколько ног у насекомых?',opts:['Шесть','Четыре','Восемь','Две'],ans:0,why:'У насекомых шесть ног.'},
+    {p:TEXT_B,q:'Где живут рыбы?',opts:['В воде','В лесу','В поле','В горах'],ans:0,why:'Рыбы живут в воде.'},
+    {p:TEXT_C,q:'Когда возникла Древняя Русь?',opts:['Более тысячи лет назад','Сто лет назад','Вчера','Десять лет назад'],ans:0,why:'Древняя Русь возникла более тысячи лет назад.'},
+    {p:TEXT_C,q:'Какой город был столицей Древней Руси?',opts:['Киев','Москва','Петербург','Казань'],ans:0,why:'Столицей Древней Руси был Киев.'},
+    {p:TEXT_C,q:'Кто крестил Русь?',opts:['Князь Владимир','Пётр Первый','Иван Грозный','Рюрик'],ans:0,why:'Князь Владимир крестил Русь.'},
+    {p:TEXT_C,q:'В каком году крестили Русь?',opts:['В 988 году','В 1380 году','В 1703 году','В 1961 году'],ans:0,why:'Русь крестили в 988 году.'},
+    {p:TEXT_C,q:'При ком Древняя Русь достигла расцвета?',opts:['При Ярославе Мудром','При Рюрике','При Наполеоне','При Гагарине'],ans:0,why:'Расцвета Русь достигла при Ярославе Мудром.'},
+    {p:TEXT_D,q:'Какая природная зона на севере России?',opts:['Арктические пустыни и тундра','Степь','Пустыня','Субтропики'],ans:0,why:'На севере России — арктические пустыни и тундра.'},
+    {p:TEXT_D,q:'Какие деревья растут в лесах?',opts:['Ели, сосны, берёзы','Пальмы','Кактусы','Ковыль'],ans:0,why:'В лесах растут ели, сосны и берёзы.'},
+    {p:TEXT_D,q:'Чем покрыты степи?',opts:['Травянистыми растениями','Льдом','Деревьями','Песком'],ans:0,why:'Степи покрыты травянистыми растениями.'},
+    {p:TEXT_D,q:'Какая зона самая южная в России?',opts:['Субтропики','Тундра','Тайга','Арктика'],ans:0,why:'Самая южная зона — субтропики.'},
+    {p:TEXT_D,q:'Где тепло даже зимой?',opts:['В субтропиках','В тундре','В Арктике','В тайге'],ans:0,why:'В субтропиках тепло даже зимой.'},
+    {p:TEXT_E,q:'Кем был Пётр Первый?',opts:['Царём','Космонавтом','Писателем','Врачом'],ans:0,why:'Пётр Первый — царь, много сделавший для России.'},
+    {p:TEXT_E,q:'Какой город основал Пётр Первый?',opts:['Санкт-Петербург','Москва','Киев','Новгород'],ans:0,why:'Пётр основал Санкт-Петербург.'},
+    {p:TEXT_E,q:'На какой реке основан Санкт-Петербург?',opts:['На Неве','На Волге','На Днепре','На Дону'],ans:0,why:'Петербург основан на берегу Невы.'},
+    {p:TEXT_E,q:'Что построил Пётр Первый?',opts:['Морской флот','Небоскрёб','Метро','Самолёт'],ans:0,why:'Пётр построил морской флот.'},
+    {p:TEXT_E,q:'Что значит «прорубил окно в Европу»?',opts:['Россия стала морской державой','Построил окно','Уехал в Европу','Разбил стекло'],ans:0,why:'Россия получила выход к морю и связь с Европой.'},
+    {p:TEXT_F,q:'Когда Гагарин полетел в космос?',opts:['12 апреля 1961 года','9 мая 1945 года','1 сентября','31 декабря'],ans:0,why:'Гагарин полетел в космос 12 апреля 1961 года.'},
+    {p:TEXT_F,q:'Кто первым полетел в космос?',opts:['Юрий Гагарин','Пётр Первый','Ломоносов','Кутузов'],ans:0,why:'Первым в космос полетел Юрий Гагарин.'},
+    {p:TEXT_F,q:'Как назывался корабль Гагарина?',opts:['«Восток»','«Союз»','«Мир»','«Спутник»'],ans:0,why:'Корабль Гагарина назывался «Восток».'},
+    {p:TEXT_F,q:'Что облетел Гагарин?',opts:['Землю','Луну','Солнце','Марс'],ans:0,why:'Гагарин облетел Землю.'},
+    {p:TEXT_F,q:'Какой праздник отмечают 12 апреля?',opts:['День космонавтики','День Победы','Новый год','День знаний'],ans:0,why:'12 апреля отмечают День космонавтики.'}
+  ]}
+];
+
+const startScreen = document.getElementById('startScreen');
+const gameScreen = document.getElementById('gameScreen');
+const resultScreen = document.getElementById('resultScreen');
+const catGrid = document.getElementById('catGrid');
+const backBtn = document.getElementById('backBtn');
+const catPill = document.getElementById('catPill');
+const gradeBadge = document.getElementById('gradeBadge');
+const hintsEl = document.getElementById('hints');
+const answerInput = document.getElementById('answerInput');
+const checkBtn = document.getElementById('checkBtn');
+const feedbackEl = document.getElementById('feedback');
+const giveupBtn = document.getElementById('giveupBtn');
+const nextBtn = document.getElementById('nextBtn');
+const qNum = document.getElementById('qNum');
+const qTotal = document.getElementById('qTotal');
+const scorePill = document.getElementById('scorePill');
+const progressFill = document.getElementById('progressFill');
+const vprGrid = document.getElementById('vprGrid');
+const qTitle = document.getElementById('qTitle');
+const promptEl = document.getElementById('prompt');
+const passageEl = document.getElementById('passage');
+const inputRow = document.getElementById('inputRow');
+const optionsEl = document.getElementById('options');
+const matchBox = document.getElementById('matchBox');
+const matchLeft = document.getElementById('matchLeft');
+const matchRight = document.getElementById('matchRight');
+const blockBox = document.getElementById('blockBox');
+const qLabel = document.getElementById('qLabel');
+const questionCard = document.getElementById('questionCard');
+const toggleOpts = document.getElementById('toggleOpts');
+
+const questions = [];
+let current = 0;
+let score = 0;
+let hintsUsed = 0;
+let wrongAttempts = 0;
+let answered = false;
+let mode = 'quiz';
+let currentCat = null;
+let currentTrainer = null;
+let matchData = null;
+let blockData = null;
+let optsHidden = false;
+
+function show(el) { el.hidden = false; }
+function hide(el) { el.hidden = true; }
+
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function norm(s) {
+  return (s || '').toLowerCase().replace(/ё/g, 'е')
+    .replace(/[^а-яa-z0-9\s]/g, ' ')
+    .replace(/\s+/g, ' ').trim();
+}
+
+function stripGenre(s) {
+  return s.replace(/^(сказка о|сказка|стихотворение|стих|рассказ|басня|поэма|былина|житие|повесть|сказ|песня)\s+/, '');
+}
+
+function levenshtein(a, b) {
+  const m = a.length, n = b.length;
+  if (m === 0) return n;
+  if (n === 0) return m;
+  const d = [];
+  for (let i = 0; i <= m; i++) d[i] = [i];
+  for (let j = 0; j <= n; j++) d[0][j] = j;
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost);
+    }
+  }
+  return d[m][n];
+}
+
+function isMatch(input, variants) {
+  const n = norm(input);
+  if (n.length < 2) return false;
+  for (const v of variants) {
+    const nv = norm(v);
+    if (!nv) continue;
+    if (n === nv) return true;
+    const maxDist = nv.length <= 5 ? 1 : nv.length <= 12 ? 2 : 3;
+    if (levenshtein(n, nv) <= maxDist) return true;
+    if (stripGenre(n) === nv || n === stripGenre(nv)) return true;
+  }
+  return false;
+}
+
+function pretty(q) {
+  const t = q.ans[0];
+  return t.charAt(0).toUpperCase() + t.slice(1);
+}
+
+function renderCategories() {
+  catGrid.innerHTML = '';
+  CATEGORIES.forEach(c => {
+    const count = c.id === 'mixed' ? QUESTIONS.length : QUESTIONS.filter(q => q.cat === c.id).length;
+    const btn = document.createElement('button');
+    btn.className = 'cat-btn';
+    btn.innerHTML = '<div class="cat-emoji">' + c.emoji + '</div><div class="cat-title">' + c.title + '</div><div class="cat-desc">' + c.desc + '</div><span class="cat-count">' + count + ' заданий</span>';
+    btn.addEventListener('click', () => startGame(c));
+    catGrid.appendChild(btn);
+  });
+}
+
+function startGame(cat) {
+  mode = 'quiz';
+  currentCat = cat;
+  questions.length = 0;
+  const pool = cat.id === 'mixed' ? QUESTIONS : QUESTIONS.filter(q => q.cat === cat.id);
+  shuffle(pool).forEach(q => questions.push(q));
+  current = 0;
+  score = 0;
+  qTotal.textContent = questions.length;
+  catPill.textContent = cat.emoji + ' ' + cat.title;
+  hide(startScreen);
+  hide(resultScreen);
+  show(gameScreen);
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[current];
+  qNum.textContent = current + 1;
+  scorePill.textContent = score;
+  progressFill.style.width = (current / questions.length * 100) + '%';
+  hintsUsed = 0;
+  wrongAttempts = 0;
+  answered = false;
+  blockData = null;
+  hide(feedbackEl);
+  feedbackEl.classList.remove('good', 'bad');
+  hide(giveupBtn);
+  hide(nextBtn);
+  optsHidden = false;
+  questionCard.classList.remove('hide-options');
+  toggleOpts.textContent = '🙈 Скрыть варианты';
+  hide(toggleOpts);
+  if (mode === 'quiz') {
+    qLabel.textContent = 'Вопрос';
+    show(inputRow);
+    show(hintsEl);
+    hide(optionsEl);
+    hide(promptEl);
+    hide(passageEl);
+    hide(matchBox);
+    hide(blockBox);
+    qTitle.textContent = 'Что это? Назови';
+    if (q.gr) { gradeBadge.textContent = q.gr + ' класс'; show(gradeBadge); }
+    else hide(gradeBadge);
+    answerInput.value = '';
+    answerInput.disabled = false;
+    answerInput.style.borderColor = '';
+    checkBtn.disabled = false;
+    buildHints(q);
+    setTimeout(() => answerInput.focus(), 50);
+  } else {
+    hide(inputRow);
+    hide(hintsEl);
+    hide(gradeBadge);
+    qTitle.textContent = currentTrainer.title;
+    if (q.type === 'match') {
+      qLabel.textContent = 'Раунд';
+      hide(promptEl);
+      hide(passageEl);
+      hide(optionsEl);
+      hide(blockBox);
+      show(matchBox);
+      renderMatch(q);
+    } else if (q.passage && Array.isArray(q.questions)) {
+      qLabel.textContent = 'Текст';
+      hide(promptEl);
+      hide(optionsEl);
+      hide(matchBox);
+      show(toggleOpts);
+      renderBlock(q);
+    } else {
+      qLabel.textContent = 'Вопрос';
+      hide(matchBox);
+      hide(blockBox);
+      show(toggleOpts);
+      if (q.p) { passageEl.textContent = q.p; show(passageEl); }
+      else hide(passageEl);
+      promptEl.textContent = q.q;
+      show(promptEl);
+      buildOptions(q);
+    }
+  }
+}
+
+function buildHints(q) {
+  const list = [];
+  if (q.em) list.push({ type: 'emoji', label: '🔤 Показать эмодзи', content: q.em, cls: '' });
+  if (q.pic && pictures[q.pic]) list.push({ type: 'picture', label: '🖼️ Показать картинку', content: pictures[q.pic], cls: '' });
+  if (q.au) list.push({ type: 'author', label: '🔍 Подсказка: что это?', content: q.au, cls: 'author' });
+  if (q.ln) list.push({ type: 'line', label: '💡 Факт-подсказка', content: q.ln, cls: 'line' });
+  hintsEl.innerHTML = '';
+  list.forEach(h => {
+    const wrap = document.createElement('div');
+    const btn = document.createElement('button');
+    btn.className = 'hint-btn';
+    btn.textContent = h.label;
+    btn.addEventListener('click', () => revealHint(btn, wrap, h));
+    const content = document.createElement('div');
+    content.className = 'hint-content' + (h.cls ? ' ' + h.cls : '');
+    content.hidden = true;
+    if (h.type === 'picture') content.innerHTML = h.content;
+    else content.textContent = h.content;
+    wrap.appendChild(btn);
+    wrap.appendChild(content);
+    hintsEl.appendChild(wrap);
+  });
+}
+
+function revealHint(btn, wrap, h) {
+  const content = wrap.querySelector('.hint-content');
+  content.hidden = false;
+  content.classList.add('reveal');
+  btn.classList.add('used');
+  btn.textContent = '✓ Использована';
+  btn.disabled = true;
+  hintsUsed++;
+}
+
+function renderVprMenu() {
+  vprGrid.innerHTML = '';
+  VPR.forEach(t => {
+    const btn = document.createElement('button');
+    btn.className = 'cat-btn';
+    btn.innerHTML = '<div class="cat-emoji">' + t.icon + '</div><div class="cat-title">' + t.title + '</div><div class="cat-desc">' + t.desc + '</div><span class="cat-count">' + t.questions.length + ' заданий</span>';
+    btn.addEventListener('click', () => startVpr(t));
+    vprGrid.appendChild(btn);
+  });
+}
+
+function groupBlocks(list) {
+  const blocks = [];
+  let cur = null;
+  list.forEach(q => {
+    if (!cur || cur.passage !== q.p) {
+      cur = { passage: q.p, questions: [] };
+      blocks.push(cur);
+    }
+    cur.questions.push({ q: q.q, opts: q.opts, ans: q.ans, why: q.why });
+  });
+  return blocks;
+}
+
+function startVpr(trainer) {
+  mode = 'vpr';
+  currentTrainer = trainer;
+  questions.length = 0;
+  if (trainer.block) {
+    let blocks = groupBlocks(trainer.questions);
+    if (trainer.shuffle !== false) blocks = shuffle(blocks);
+    blocks.forEach(b => questions.push(b));
+  } else {
+    const list = trainer.shuffle === false ? trainer.questions.slice() : shuffle(trainer.questions);
+    list.forEach(q => questions.push(q));
+  }
+  current = 0;
+  score = 0;
+  qTotal.textContent = questions.length;
+  catPill.textContent = trainer.icon + ' ' + trainer.title;
+  hide(startScreen);
+  hide(resultScreen);
+  show(gameScreen);
+  renderQuestion();
+}
+
+function buildOptions(q) {
+  optionsEl.innerHTML = '';
+  const letters = ['А', 'Б', 'В', 'Г'];
+  shuffle([0, 1, 2, 3]).forEach((origIdx, pos) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    btn.dataset.idx = origIdx;
+    btn.innerHTML = '<span class="letter">' + letters[pos] + '</span><span>' + q.opts[origIdx] + '</span>';
+    btn.addEventListener('click', () => chooseOption(btn, origIdx, q));
+    optionsEl.appendChild(btn);
+  });
+  show(optionsEl);
+}
+
+function chooseOption(btn, idx, q) {
+  if (answered) return;
+  answered = true;
+  optionsEl.querySelectorAll('.opt-btn').forEach(b => {
+    b.disabled = true;
+    if (parseInt(b.dataset.idx, 10) === q.ans) b.classList.add('correct');
+  });
+  if (idx === q.ans) {
+    score += 10;
+    scorePill.textContent = score;
+    showFeedback('good', '<strong>Верно! +10 очков</strong><span class="fact">' + q.why + '</span>');
+    launchConfetti();
+  } else {
+    btn.classList.add('wrong');
+    showFeedback('bad', '<strong>Неверно.</strong><span class="fact">' + q.why + '</span>');
+  }
+  show(nextBtn);
+}
+
+function renderMatch(q) {
+  matchLeft.innerHTML = '';
+  matchRight.innerHTML = '';
+  matchData = { q, matchedCount: 0, mistakes: 0, selectedLeft: null };
+  const rightOrder = shuffle(q.pairs.map((p, i) => i));
+  q.pairs.forEach((p, i) => {
+    const lb = document.createElement('button');
+    lb.className = 'match-item';
+    lb.textContent = p.a;
+    lb.dataset.idx = i;
+    lb.addEventListener('click', () => selectLeft(lb, i));
+    matchLeft.appendChild(lb);
+  });
+  rightOrder.forEach(orig => {
+    const rb = document.createElement('button');
+    rb.className = 'match-item';
+    rb.textContent = q.pairs[orig].b;
+    rb.addEventListener('click', () => selectRight(rb, orig));
+    matchRight.appendChild(rb);
+  });
+}
+
+function selectLeft(btn, i) {
+  if (!matchData || btn.classList.contains('done')) return;
+  if (matchData.selectedLeft) matchData.selectedLeft.classList.remove('selected');
+  matchData.selectedLeft = btn;
+  btn.classList.add('selected');
+}
+
+function selectRight(btn, i) {
+  if (!matchData || btn.classList.contains('done')) return;
+  if (!matchData.selectedLeft) {
+    btn.classList.add('wrong-flash');
+    setTimeout(() => btn.classList.remove('wrong-flash'), 300);
+    return;
+  }
+  const leftIdx = parseInt(matchData.selectedLeft.dataset.idx, 10);
+  if (leftIdx === i) {
+    matchData.selectedLeft.classList.remove('selected');
+    matchData.selectedLeft.classList.add('done');
+    matchData.selectedLeft.disabled = true;
+    btn.classList.add('done');
+    btn.disabled = true;
+    matchData.selectedLeft = null;
+    matchData.matchedCount++;
+    if (matchData.matchedCount === matchData.q.pairs.length) finishMatch();
+  } else {
+    matchData.mistakes++;
+    const sel = matchData.selectedLeft;
+    sel.classList.add('wrong-flash');
+    btn.classList.add('wrong-flash');
+    setTimeout(() => {
+      if (sel && sel.classList) sel.classList.remove('wrong-flash');
+      btn.classList.remove('wrong-flash');
+    }, 300);
+  }
+}
+
+function finishMatch() {
+  answered = true;
+  const pts = Math.max(0, 10 - matchData.mistakes);
+  score += pts;
+  scorePill.textContent = score;
+  showFeedback('good', '<strong>Молодец! +' + pts + ' очков</strong><span class="fact">Все пары соединены верно.</span>');
+  launchConfetti();
+  show(nextBtn);
+}
+
+function renderBlock(item) {
+  passageEl.textContent = item.passage;
+  show(passageEl);
+  blockBox.innerHTML = '';
+  blockData = { item, answered: 0, total: item.questions.length, doneFlags: new Array(item.questions.length).fill(false) };
+  item.questions.forEach((sq, idx) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'bq';
+    const text = document.createElement('div');
+    text.className = 'bq-text';
+    text.innerHTML = '<span class="bq-num">' + (idx + 1) + '.</span>' + sq.q;
+    wrap.appendChild(text);
+    const opts = document.createElement('div');
+    opts.className = 'bq-opts';
+    shuffle([0, 1, 2, 3]).forEach(origIdx => {
+      const b = document.createElement('button');
+      b.className = 'opt-btn';
+      b.textContent = sq.opts[origIdx];
+      b.dataset.idx = origIdx;
+      b.addEventListener('click', () => chooseBlockOption(wrap, b, sq, origIdx, idx));
+      opts.appendChild(b);
+    });
+    wrap.appendChild(opts);
+    const fb = document.createElement('div');
+    fb.className = 'bq-feedback';
+    fb.hidden = true;
+    wrap.appendChild(fb);
+    blockBox.appendChild(wrap);
+  });
+  show(blockBox);
+}
+
+function chooseBlockOption(wrap, btn, sq, oi, idx) {
+  if (!blockData || blockData.doneFlags[idx]) return;
+  blockData.doneFlags[idx] = true;
+  wrap.querySelectorAll('.opt-btn').forEach(b => {
+    b.disabled = true;
+    if (parseInt(b.dataset.idx, 10) === sq.ans) b.classList.add('correct');
+  });
+  const fb = wrap.querySelector('.bq-feedback');
+  if (oi === sq.ans) {
+    score += 10;
+    fb.textContent = '✓ Верно. ' + sq.why;
+    fb.classList.remove('bad');
+  } else {
+    btn.classList.add('wrong');
+    fb.textContent = '✗ Неверно. ' + sq.why;
+    fb.classList.add('bad');
+  }
+  fb.hidden = false;
+  scorePill.textContent = score;
+  blockData.answered++;
+  if (blockData.answered === blockData.total) {
+    show(nextBtn);
+    launchConfetti();
+  }
+}
+
+function checkAnswer() {
+  if (answered) return;
+  const q = questions[current];
+  const val = answerInput.value;
+  if (isMatch(val, q.ans)) {
+    answered = true;
+    answerInput.disabled = true;
+    checkBtn.disabled = true;
+    const pts = Math.max(5, 30 - hintsUsed * 10 - wrongAttempts * 5);
+    score += pts;
+    scorePill.textContent = score;
+    showFeedback('good', '<strong>Верно! +' + pts + ' очков</strong><span class="fact">' + q.fact + '</span>');
+    launchConfetti();
+    hide(giveupBtn);
+    show(nextBtn);
+  } else {
+    wrongAttempts++;
+    answerInput.style.borderColor = 'var(--red)';
+    setTimeout(() => answerInput.style.borderColor = '', 400);
+    showFeedback('bad', '<strong>Не угадал. Попробуй ещё раз!</strong>');
+    answerInput.select();
+    if (wrongAttempts >= 2) show(giveupBtn);
+  }
+}
+
+function giveUp() {
+  if (answered) return;
+  const q = questions[current];
+  answered = true;
+  answerInput.disabled = true;
+  checkBtn.disabled = true;
+  hide(giveupBtn);
+  show(nextBtn);
+  showFeedback('bad', '<strong>Правильный ответ:</strong> <span class="right-answer">«' + pretty(q) + '»</span><span class="fact">' + q.fact + '</span>');
+}
+
+function showFeedback(cls, html) {
+  show(feedbackEl);
+  feedbackEl.className = 'feedback ' + cls;
+  feedbackEl.innerHTML = html;
+}
+
+function launchConfetti() {
+  const colors = ['#ff5252', '#ffca28', '#66bb6a', '#42a5f5', '#ab47bc', '#ff7043'];
+  for (let i = 0; i < 40; i++) {
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    c.style.left = (Math.random() * 100) + '%';
+    c.style.background = colors[Math.floor(Math.random() * colors.length)];
+    c.style.animationDelay = (Math.random() * 0.4) + 's';
+    c.style.animationDuration = (2 + Math.random() * 2) + 's';
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 4500);
+  }
+}
+
+function next() {
+  current++;
+  progressFill.style.width = (current / questions.length * 100) + '%';
+  if (current >= questions.length) {
+    showResults();
+  } else {
+    renderQuestion();
+  }
+}
+
+function computeMax() {
+  if (mode === 'quiz') return questions.length * 30;
+  let n = 0;
+  questions.forEach(q => {
+    if (q.passage && Array.isArray(q.questions)) n += q.questions.length;
+    else n += 1;
+  });
+  return n * 10;
+}
+
+function showResults() {
+  hide(gameScreen);
+  show(resultScreen);
+  const max = computeMax();
+  const pct = score / max;
+  let stars, emoji, title, msg;
+  if (pct >= 0.85) { stars = 3; emoji = '🏆'; title = 'Великолепно!'; msg = 'Ты настоящий знаток окружающего мира!'; }
+  else if (pct >= 0.6) { stars = 2; emoji = '🎉'; title = 'Отлично!'; msg = 'Ты хорошо знаешь природу, страны и историю!'; }
+  else if (pct >= 0.35) { stars = 1; emoji = '👍'; title = 'Неплохо!'; msg = 'Попробуй ещё раз — получится лучше!'; }
+  else { stars = 0; emoji = '🌍'; title = 'Стоит повторить!'; msg = 'Повтори тему и приходи снова!'; }
+
+  document.getElementById('resultEmoji').textContent = emoji;
+  document.getElementById('resultTitle').textContent = title;
+  document.getElementById('finalScore').textContent = score;
+  document.getElementById('resultMsg').textContent = msg;
+
+  const starsEl = document.getElementById('stars');
+  starsEl.innerHTML = '';
+  for (let i = 0; i < 3; i++) {
+    const s = document.createElement('span');
+    s.className = 'star' + (i < stars ? ' on' : '');
+    s.textContent = '⭐';
+    starsEl.appendChild(s);
+  }
+}
+
+checkBtn.addEventListener('click', checkAnswer);
+answerInput.addEventListener('keydown', e => { if (e.key === 'Enter') checkAnswer(); });
+giveupBtn.addEventListener('click', giveUp);
+nextBtn.addEventListener('click', next);
+document.getElementById('restartBtn').addEventListener('click', () => {
+  if (mode === 'quiz') startGame(currentCat);
+  else startVpr(currentTrainer);
+});
+document.getElementById('menuBtn').addEventListener('click', () => { hide(resultScreen); show(startScreen); });
+backBtn.addEventListener('click', () => { hide(gameScreen); show(startScreen); });
+toggleOpts.addEventListener('click', () => {
+  optsHidden = !optsHidden;
+  questionCard.classList.toggle('hide-options', optsHidden);
+  toggleOpts.textContent = optsHidden ? '👁️ Показать варианты' : '🙈 Скрыть варианты';
+});
+
+renderCategories();
+renderVprMenu();
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
