@@ -1290,7 +1290,7 @@ function renderQuestion() {
       show(toggleOpts);
       if (q.p) { passageEl.textContent = q.p; show(passageEl); }
       else hide(passageEl);
-      if (q.flag && flags[q.flag]) { flagBox.innerHTML = flags[q.flag]; show(flagBox); }
+      if (q.flag) { flagBox.innerHTML = '<img src="flags/' + q.flag + '.png" style="width:170px;max-width:100%;border:1px solid #e0e0e0;border-radius:8px;box-shadow:0 12px 32px rgba(0,0,0,.14)">'; show(flagBox); }
       else hide(flagBox);
       promptEl.textContent = q.q;
       show(promptEl);
